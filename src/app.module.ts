@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from './user/user.module';
+import { UserModule } from './modules/user/user.module';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import config from '../config';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { GatewayModule } from './common/websocket/websocket.module';
 
 @Module({
   imports: [
+    GatewayModule,
     UserModule,
     AuthModule,
     ConfigModule.forRoot({

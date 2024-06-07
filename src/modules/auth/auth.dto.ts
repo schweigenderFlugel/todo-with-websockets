@@ -1,5 +1,5 @@
 import { IsEmail, IsString, IsNotEmpty } from 'class-validator';
-import { IUser } from 'src/user/user.interface';
+import { IUser } from 'src/modules/user/user.interface';
 
 export class AuthDto implements IUser {
   @IsNotEmpty()
