@@ -1,7 +1,6 @@
 import { IsEmail, IsString, IsNotEmpty } from 'class-validator';
-import { IUser } from 'src/modules/user/user.interface';
 
-export class SignInDto implements IUser {
+export class SignInDto {
   @IsNotEmpty()
   @IsEmail()
   email: string;
