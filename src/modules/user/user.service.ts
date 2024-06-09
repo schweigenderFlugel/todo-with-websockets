@@ -8,8 +8,12 @@ import { UserDto } from './user.dto';
 export class UserService {
   constructor(@Inject(UserModel) readonly userModel: IUserModel) {}
 
-  async getUserByEmail(email: UserDto['email']) {
+  async getUserByEmail(email: string) {
     return await this.userModel.getUserByEmail(email);
+  }
+
+  async getUserByUsername(username: string) {
+    return await this.userModel.getUserByUsername(username);
   }
 
   async createUser(user: UserDto): Promise<string> {
