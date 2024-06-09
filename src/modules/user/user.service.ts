@@ -2,7 +2,6 @@ import { Injectable, Inject } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserModel } from './user.model';
 import { IUserModel } from './user.interface';
-import { UserDto } from './user.dto';
 
 @Injectable()
 export class UserService {
