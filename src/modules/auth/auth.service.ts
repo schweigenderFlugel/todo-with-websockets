@@ -21,7 +21,7 @@ export class AuthService {
     private readonly configService: ConfigType<typeof config>,
   ) {}
 
-  async signup(data: SignUpDto): Promise<string> {
+  async signup(data: SignUpDto): Promise<void> {
     data.password = await bcrypt.hash(data.password, 10);
     return await this.userService.createUser(data);
   }

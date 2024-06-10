@@ -12,7 +12,7 @@ export class AuthController {
   ) {}
 
   @Post('signup')
-  async signup(@Body() user: SignUpDto): Promise<string> {
+  async signup(@Body() user: SignUpDto): Promise<void> {
     return await this.authService.signup(user);
   }
 

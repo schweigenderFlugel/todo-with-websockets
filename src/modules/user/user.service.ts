@@ -10,7 +10,7 @@ export class UserService {
     return await this.userModel.getUserByEmail(email);
   }
 
-  async createUser(data: IUser): Promise<string> {
+  async createUser(data: IUser): Promise<void> {
     const userFoundByEmail = await this.userModel.getUserByEmail(data.email);
     if (userFoundByEmail)
       throw new ConflictException('the user already exists');

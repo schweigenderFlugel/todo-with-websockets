@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { User } from './user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { IUser, IUserModel } from './user.interface';
@@ -20,9 +20,12 @@ export class UserModel implements IUserModel {
     });
   }
 
-  async createUser(user: IUser): Promise<string> {
+  async createUser(user: IUser): Promise<void> {
     const newUser = new this.model(user);
     newUser.save();
-    return 'new user created';
+  }
+
+  async updateUser(id: ObjectId, data: Partial<IUser>): Promise<void> {
+    this.model.findOneAndUpdate(id, data);
   }
 }
