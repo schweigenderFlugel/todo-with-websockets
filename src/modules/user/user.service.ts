@@ -6,9 +6,8 @@ import { IUser, IUserModel } from './user.interface';
 export class UserService {
   constructor(@Inject(UserModel) readonly userModel: IUserModel) {}
 
-  async getUser(email: string | null, username: string | null) {
-    if (email) return await this.userModel.getUserByEmail(email);
-    else if (username) return await this.userModel.getUserByUsername(username);
+  async getUser(email: string) {
+    return await this.userModel.getUserByEmail(email);
   }
 
   async createUser(data: IUser): Promise<string> {

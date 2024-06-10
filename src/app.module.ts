@@ -4,11 +4,13 @@ import { UserModule } from './modules/user/user.module';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import config from '../config';
 import { AuthModule } from './modules/auth/auth.module';
-import { GatewayModule } from './common/websocket/websocket.module';
+import { EventsModule } from './common/websocket/events.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
-    GatewayModule,
+    EventsModule,
     UserModule,
     AuthModule,
     ConfigModule.forRoot({
@@ -22,6 +24,9 @@ import { GatewayModule } from './common/websocket/websocket.module';
           uri: configService.mongodbUri,
         };
       },
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../..', 'public'),
     }),
   ],
   controllers: [],

@@ -3,9 +3,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UserModule } from 'src/modules/user/user.module';
+import { EventsModule } from 'src/common/websocket/events.module';
 
 @Module({
-  imports: [UserModule, JwtModule.register({})],
+  imports: [UserModule, EventsModule, JwtModule.register({})],
   providers: [AuthService],
   controllers: [AuthController],
 })

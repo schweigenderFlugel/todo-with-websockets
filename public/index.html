@@ -1,0 +1,13 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <script src="socket.io/socket.io.min.js"></script>
+    <script>
+      const socket = io('http://localhost:3000', { auth: { username: 'bla', token: 'bla' }});
+      socket.emit('signin', { message: 'bla ha iniciado sesión' })
+      socket.on('connection', (data) => console.log(data));
+      socket.on('disconnection', (data) => console.log(data));
+    </script>
+  </body>
+</html>

@@ -26,15 +26,15 @@ export class AuthService {
     return await this.userService.createUser(data);
   }
 
-  async signin(data: SignInDto): Promise<{ accessToken: string }> {
+  async signin(
+    data: SignInDto,
+  ): Promise<{ accessToken: string; username: string }> {
     try {
-      const userFound = await this.userService.getUser(
-        data.email,
-        data.username,
-      );
-      if (!userFound) throw new NotFoundException();
+      const userFound = await this.userService.getUser(data.email);
+      if (!userFound) throw new NotFoundException('user not found!');
       const validate = await bcrypt.compare(data.password, userFound.password);
-      if (!validate) throw new UnauthorizedException();
+      if (!validate)
+        throw new UnauthorizedException('the credential are invalid!');
       const payload = { id: userFound._id };
       const accessToken = await this.jwtService.signAsync(payload, {
         secret:
@@ -43,7 +43,7 @@ export class AuthService {
             : 'secret',
         expiresIn: '10m',
       });
-      return { accessToken: accessToken };
+      return { accessToken: accessToken, username: userFound.username };
     } catch (error) {
       console.log(error);
     }
