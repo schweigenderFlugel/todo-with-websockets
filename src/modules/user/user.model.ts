@@ -8,9 +8,15 @@ import { IUser, IUserModel } from './user.interface';
 export class UserModel implements IUserModel {
   constructor(@InjectModel(User.name) private readonly model: Model<User>) {}
 
-  async getUserByEmail(email: string) {
+  async getUserByEmail(email: string): Promise<User> {
     return this.model.findOne({
       email: email,
+    });
+  }
+
+  async getUserByUsername(username: string): Promise<User> {
+    return this.model.findOne({
+      username: username,
     });
   }
 

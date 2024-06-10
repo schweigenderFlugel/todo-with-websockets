@@ -1,22 +1,25 @@
-import { Injectable, Inject } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import { Injectable, Inject, ConflictException } from '@nestjs/common';
 import { UserModel } from './user.model';
-import { IUserModel } from './user.interface';
+import { IUser, IUserModel } from './user.interface';
 
 @Injectable()
 export class UserService {
   constructor(@Inject(UserModel) readonly userModel: IUserModel) {}
 
-  async getUserByEmail(email: string) {
-    return await this.userModel.getUserByEmail(email);
+  async getUser(email: string | null, username: string | null) {
+    if (email) return await this.userModel.getUserByEmail(email);
+    else if (username) return await this.userModel.getUserByUsername(username);
   }
 
-  async getUserByUsername(username: string) {
-    return await this.userModel.getUserByUsername(username);
-  }
-
-  async createUser(user: UserDto): Promise<string> {
-    user.password = await bcrypt.hash(user.password, 10);
-    return this.userModel.createUser(user);
+  async createUser(data: IUser): Promise<string> {
+    const userFoundByEmail = await this.userModel.getUserByEmail(data.email);
+    if (userFoundByEmail)
+      throw new ConflictException('the user already exists');
+    const userFoundByUsername = await this.userModel.getUserByUsername(
+      data.username,
+    );
+    if (userFoundByUsername)
+      throw new ConflictException('the username must be unique');
+    return this.userModel.createUser(data);
   }
 }

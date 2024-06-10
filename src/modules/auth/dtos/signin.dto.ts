@@ -1,9 +1,13 @@
-import { IsEmail, IsString, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class SignInDto {
-  @IsNotEmpty()
+  @IsOptional()
+  @IsString()
+  username: string | null;
+
+  @IsOptional()
   @IsEmail()
-  email: string;
+  email: string | null;
 
   @IsNotEmpty()
   @IsString()

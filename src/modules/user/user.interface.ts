@@ -1,3 +1,5 @@
+import { User } from './user.schema';
+
 export interface IUser {
   username: string;
   email: string;
@@ -5,7 +7,7 @@ export interface IUser {
 }
 
 export interface IUserModel {
-  getUserByEmail(email: IUser['email']);
-  getUserByUsername(username: IUser['username'];
-  createUser(user: IUser): Promise<string>;
+  getUserByEmail(email: IUser['email']): Promise<User>;
+  getUserByUsername(username: IUser['username']): Promise<User>;
+  createUser(data: IUser): Promise<string>;
 }
