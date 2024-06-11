@@ -8,6 +8,12 @@ import { IUser, IUserModel } from './user.interface';
 export class UserModel implements IUserModel {
   constructor(@InjectModel(User.name) private readonly model: Model<User>) {}
 
+  async getUserById(id: ObjectId): Promise<User> {
+    return await this.model.findOne({
+      _id: id
+    })
+  }
+
   async getUserByEmail(email: string): Promise<User> {
     return await this.model.findOne({
       email: email,
@@ -26,6 +32,6 @@ export class UserModel implements IUserModel {
   }
 
   async updateUser(id: ObjectId, data: Partial<IUser>): Promise<void> {
-    await this.model.findOneAndUpdate(id, data);
+    await this.model.findOneAndUpdate({ id, ...data });
   }
 }

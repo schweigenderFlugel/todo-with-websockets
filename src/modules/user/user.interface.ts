@@ -13,6 +13,7 @@ export interface ChangePassword {
 }
 
 export interface IUserModel {
+  getUserById(id: ObjectId): Promise<User>;
   getUserByEmail(email: IUser['email']): Promise<User>;
   getUserByUsername(username: IUser['username']): Promise<User>;
   createUser(data: IUser): Promise<void>;

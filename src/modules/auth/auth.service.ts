@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Inject,
   Injectable,
   NotFoundException,
@@ -12,6 +13,8 @@ import config from '../../../config';
 import { ConfigType } from '@nestjs/config';
 import { SignUpDto } from './dtos/signup.dto';
 import { ITokenPayload } from '../../common/interfaces/auth.interface';
+import { ObjectId } from 'mongoose';
+import { ChangePassword } from '../user/user.interface';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +33,7 @@ export class AuthService {
   async signin(
     data: SignInDto,
   ): Promise<{ accessToken: string; username: string } | undefined> {
-    const userFound = await this.userService.getUser(data.email);
+    const userFound = await this.userService.getUserByEmail(data.email);
     if (!userFound) throw new NotFoundException('user not found!');
     const validate = await bcrypt.compare(data.password, userFound.password);
     if (!validate)
@@ -44,5 +47,16 @@ export class AuthService {
       expiresIn: '10m',
     });
     return { accessToken: accessToken, username: userFound.username };
+  }
+
+  async changePassword(id: ObjectId, data: ChangePassword) {
+    const userFound = await this.userService.getUserById(id);
+    if (!userFound) throw new NotFoundException('user not found!');
+    const validate = await bcrypt.compare(data.currentPassword, userFound.password);
+    if (!validate)
+      throw new UnauthorizedException('the credential are invalid!');
+    if (data.currentPassword === data.newPassword) throw new BadRequestException('the passwords are equal!')
+    data.newPassword = await bcrypt.hash(data.newPassword, 10);
+    await this.userService.updateUser(id, { password: data.newPassword })
   }
 }

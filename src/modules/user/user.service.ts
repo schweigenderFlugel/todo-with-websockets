@@ -2,12 +2,17 @@ import { Injectable, Inject, ConflictException, NotFoundException } from '@nestj
 import { UserModel } from './user.model';
 import { IUser, IUserModel } from './user.interface';
 import { User } from './user.schema';
+import { ObjectId } from 'mongoose';
 
 @Injectable()
 export class UserService {
   constructor(@Inject(UserModel) readonly userModel: IUserModel) {}
 
-  async getUser(email: string): Promise<User> | undefined {
+  async getUserById(id: ObjectId): Promise<User> | undefined {
+    return await this.userModel.getUserById(id);
+  }
+
+  async getUserByEmail(email: string): Promise<User> | undefined {
     return await this.userModel.getUserByEmail(email);
   }
 
@@ -21,5 +26,9 @@ export class UserService {
     if (userFoundByUsername)
       throw new ConflictException('the username must be unique');
     return this.userModel.createUser(data);
+  }
+
+  async updateUser(id: ObjectId, data: Partial<IUser>) {
+    return await this.userModel.updateUser(id, data);
   }
 }

@@ -22,4 +22,12 @@ export class ProfileService {
       throw new ConflictException('the profile already exists');
     return this.profileModel.createProfile({ userId, ...data });
   }
+
+  async updateProfile(userId: IProfile['userId'], data: Partial<ProfileDto>): Promise<void> {
+    const isValid = isValidObjectId(userId);
+    if (!isValid) throw new NotAcceptableException('id invalid!');
+    const profileFound = await this.profileModel.getProfile(userId);
+    if (!profileFound) throw new NotFoundException('profile not found!');
+    return await this.profileModel.updateProfile(userId, data);
+  }
 }

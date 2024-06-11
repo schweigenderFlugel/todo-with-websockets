@@ -1,11 +1,4 @@
-import {
-  IsEmail,
-  IsString,
-  IsNotEmpty,
-  IsOptional,
-  MinLength,
-  MaxLength,
-} from 'class-validator';
+import { IsString, IsNotEmpty, MinLength, MaxLength } from 'class-validator';
 
 enum ErrorMessages {
   MIN = 'the password needs to be 8 characters minimum',
@@ -13,8 +6,8 @@ enum ErrorMessages {
 }
 
 export class ChangePasswordDto {
-  @IsOptional()
-  @IsEmail()
+  @IsNotEmpty()
+  @IsString()
   currentPassword: string;
 
   @IsNotEmpty()

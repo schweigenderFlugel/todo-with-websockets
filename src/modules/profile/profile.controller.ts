@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Req, UseGuards } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { ProfileDto } from './profile.dto';
 import { JwtGuard } from 'src/common/guards/jwt.guard';
@@ -21,5 +21,11 @@ export class ProfileController {
   async createProfile(@Req() req: UserRequest, @Body() data: ProfileDto) {
     const userId = req.user.id;
     return this.profileService.createProfile(userId, data)
+  }
+
+  @Put()
+  async updateProfile(@Req() req: UserRequest, @Body() data: ProfileDto) {
+    const userId = req.user.id;
+    return this.profileService.updateProfile(userId, data)
   }
 }
