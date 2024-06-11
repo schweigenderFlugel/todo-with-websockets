@@ -9,23 +9,23 @@ export class UserModel implements IUserModel {
   constructor(@InjectModel(User.name) private readonly model: Model<User>) {}
 
   async getUserByEmail(email: string): Promise<User> {
-    return this.model.findOne({
+    return await this.model.findOne({
       email: email,
     });
   }
 
   async getUserByUsername(username: string): Promise<User> {
-    return this.model.findOne({
+    return await this.model.findOne({
       username: username,
     });
   }
 
   async createUser(user: IUser): Promise<void> {
     const newUser = new this.model(user);
-    newUser.save();
+    await newUser.save();
   }
 
   async updateUser(id: ObjectId, data: Partial<IUser>): Promise<void> {
-    this.model.findOneAndUpdate(id, data);
+    await this.model.findOneAndUpdate(id, data);
   }
 }

@@ -7,12 +7,14 @@ import { AuthModule } from './modules/auth/auth.module';
 import { EventsModule } from './common/websocket/events.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ProfileModule } from './modules/profile/profile.module';
 
 @Module({
   imports: [
     EventsModule,
     UserModule,
     AuthModule,
+    ProfileModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [config],

@@ -1,12 +1,13 @@
-import { Injectable, Inject, ConflictException } from '@nestjs/common';
+import { Injectable, Inject, ConflictException, NotFoundException } from '@nestjs/common';
 import { UserModel } from './user.model';
 import { IUser, IUserModel } from './user.interface';
+import { User } from './user.schema';
 
 @Injectable()
 export class UserService {
   constructor(@Inject(UserModel) readonly userModel: IUserModel) {}
 
-  async getUser(email: string) {
+  async getUser(email: string): Promise<User> | undefined {
     return await this.userModel.getUserByEmail(email);
   }
 
