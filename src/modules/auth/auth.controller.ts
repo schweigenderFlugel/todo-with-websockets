@@ -1,4 +1,5 @@
-import { Controller, Post, Put, Body, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Req, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dtos/signin.dto';
 import { SignUpDto } from './dtos/signup.dto';
@@ -20,8 +21,8 @@ export class AuthController {
   }
 
   @Post('signin')
-  async login(@Body() auth: SignInDto): Promise<{ accessToken: string }> {
-    const { username, accessToken } = await this.authService.signin(auth);
+  async login(@Req() req: Request, @Body() auth: SignInDto): Promise<{ accessToken: string }> {
+    const { username, accessToken } = await this.authService.signin(req, auth);
     this.eventsGateway.server.emit('signin', { username });
     return { accessToken };
   }
@@ -31,5 +32,12 @@ export class AuthController {
   async changePassword(@Req() req: UserRequest, @Body() data: ChangePasswordDto) {
     const id = req.user.id;
     return await this.authService.changePassword(id, data);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('signout')
+  async signout(@Req() req: Request, @Req() user: UserRequest) {
+    const id = user.user.id;
+    return await this.authService.signout(req, id);
   }
 }

@@ -3,7 +3,6 @@ import { Model, Schema } from 'mongoose';
 import { Profile } from './profile.schema'; 
 import { InjectModel } from '@nestjs/mongoose';
 import { IProfile, IProfileModel } from './profile.interface';
-import { User } from '../user/user.schema';
 
 @Injectable()
 export class ProfileModel implements IProfileModel {
