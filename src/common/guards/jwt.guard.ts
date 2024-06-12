@@ -58,10 +58,11 @@ export class JwtGuard implements CanActivate {
         data.user = payload;
       }
     } catch (error) {
-      if (error instanceof JsonWebTokenError)
+      if (error instanceof JsonWebTokenError) {
         throw new UnauthorizedException(error.message);
-      else if (error instanceof TokenExpiredError)
+      } else if (error instanceof TokenExpiredError) {
         throw new ForbiddenException(error.message);
+      }
     }
     return true;
   }

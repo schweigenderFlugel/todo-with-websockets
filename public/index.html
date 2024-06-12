@@ -3,14 +3,50 @@
   </head>
   <body>
     <p>Hola mundo</p>
+    <div id="buttons"></div>
+    <ul id="user-list"></ul>
     <script src="socket.io/socket.io.min.js"></script>
     <script>
-      const socket = io('http://localhost:3000', { auth: { username: 'bla', token: 'bla' }});
-      socket.on('connection', (data) => console.log(data));
-      socket.on('disconnection', (data) => console.log(data));
+      const username = `user ${Math.floor(Math.random() * 10)}`
+      const socket = io('http://localhost:3000', { auth: { username: username, token: 'bla' }});
+      socket.on('connect', () => console.log('online'));
+      socket.on('user-disconnected', (data) => console.log(data))
+
+      const signin = document.createElement('button');
+      signin.textContent = 'Entrar';
+      signin.disabled = false;
+      const signout = document.createElement('button');
+      signout.textContent = 'Salir';
+      signout.disabled = true;
+      document.querySelector('#buttons').appendChild(signin)
+      document.querySelector('#buttons').appendChild(signout)
+
+      signin.addEventListener('click', () => {
+        socket.emit('signin');
+        signin.disabled = true;
+        signout.disabled = false;
+      })
+      
+      signout.addEventListener('click', () => {
+        socket.emit('signout');
+        signout.disabled = true;
+        signin.disabled = false;
+      })
+
+      socket.on('user-signed-in', (data) => console.log(data))
+      socket.on('user-signed-out', (data) => console.log(data))
+      socket.io.on("reconnect_attempt", () => console.log("Se está intentando restablecer la conexión" )) 
+      socket.io.on("reconnect", () => { console.log("Se ha restablecido la conexión") })
       socket.on('error', (data) => console.log(data));
-      socket.emit('chat', { message: 'hello world' });
-      socket.on('response', (data) => console.log(data))
+      socket.on('on-clients-changed', (data) => {
+        const userList = document.querySelector('#user-list');
+        data.map(item => {
+          const user = document.createElement('li');
+          user.textContent = item.username;
+          if (user.textContent === username) user.style.color = 'rgb(0, 180, 0)'
+          userList.append(user);
+        })
+      })
     </script>
   </body>
 </html>

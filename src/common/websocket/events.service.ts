@@ -11,10 +11,12 @@ export class EventsService {
 
   onClientConnected(client: Client) {
     this.clients[client.id] = client;
+    return Object.values(this.clients);
   }
 
   onClientDisconnected(id: string) {
     delete this.clients[id];
+    return Object.values(this.clients);
   }
 
   getClients() {
