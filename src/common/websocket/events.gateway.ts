@@ -1,4 +1,10 @@
-import { ArgumentsHost, Catch, UnauthorizedException, UseFilters, UseGuards } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  UnauthorizedException,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -21,7 +27,10 @@ export class EventsGateway implements OnGatewayConnection {
     const { username } = client.handshake.auth;
     try {
       this.server.emit('connection', `${username} is connected`);
-      this.eventsService.onClientConnected({ id: client.id, username: username });
+      this.eventsService.onClientConnected({
+        id: client.id,
+        username: username,
+      });
     } catch (error) {
       console.log(error);
       client.disconnect();
@@ -38,7 +47,10 @@ export class EventsGateway implements OnGatewayConnection {
     try {
       const { token, username } = client.handshake.auth;
       this.server.emit('connection', `${username} is connected`);
-      this.eventsService.onClientConnected({ id: client.id, username: username });
+      this.eventsService.onClientConnected({
+        id: client.id,
+        username: username,
+      });
     } catch (error) {
       client.disconnect();
       this.eventsService.onClientDisconnected(client.id);
@@ -52,9 +64,12 @@ export class EventsGateway implements OnGatewayConnection {
     try {
       const { token, username } = client.handshake.auth;
       this.server.emit('response', `${username} says ${data['message']}`);
-      this.eventsService.onClientConnected({ id: client.id, username: username });
+      this.eventsService.onClientConnected({
+        id: client.id,
+        username: username,
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       client.disconnect();
       this.eventsService.onClientDisconnected(client.id);
       this.server.emit('disconnection', `bla disconnected!`);

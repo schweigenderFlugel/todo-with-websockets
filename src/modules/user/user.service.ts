@@ -1,4 +1,4 @@
-import { Injectable, Inject, ConflictException, NotFoundException } from '@nestjs/common';
+import { Injectable, Inject, ConflictException } from '@nestjs/common';
 import { UserModel } from './user.model';
 import { IUser, IUserModel } from './user.interface';
 import { User } from './user.schema';

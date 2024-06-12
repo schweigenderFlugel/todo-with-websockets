@@ -1,15 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { Model, Schema } from 'mongoose';
-import { Profile } from './profile.schema'; 
+import { Model, ObjectId } from 'mongoose';
+import { Profile } from './profile.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { IProfile, IProfileModel } from './profile.interface';
 
 @Injectable()
 export class ProfileModel implements IProfileModel {
-  constructor(@InjectModel(Profile.name) private readonly model: Model<Profile>) {}
+  constructor(
+    @InjectModel(Profile.name) private readonly model: Model<Profile>,
+  ) {}
 
-  async getProfile(userId: Schema.Types.ObjectId): Promise<Profile> {
-    return await this.model.findOne({ userId: userId })
+  async getProfile(userId: ObjectId): Promise<Profile> {
+    return await this.model
+      .findOne({ userId: userId })
       .populate({ path: 'userId', select: 'email' })
       .exec();
   }
@@ -19,7 +22,10 @@ export class ProfileModel implements IProfileModel {
     newProfile.save();
   }
 
-  async updateProfile(userId: Schema.Types.ObjectId, data: Partial<IProfile>): Promise<void> {
+  async updateProfile(
+    userId: ObjectId,
+    data: Partial<IProfile>,
+  ): Promise<void> {
     await this.model.findOneAndUpdate(userId, data);
   }
 }

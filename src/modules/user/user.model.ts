@@ -10,8 +10,8 @@ export class UserModel implements IUserModel {
 
   async getUserById(id: ObjectId): Promise<User> {
     return await this.model.findOne({
-      _id: id
-    })
+      _id: id,
+    });
   }
 
   async getUserByEmail(email: string): Promise<User> {

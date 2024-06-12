@@ -10,15 +10,16 @@ import { Auth, AuthSchema } from './auth.schema';
 
 @Module({
   imports: [
-    UserModule, 
-    EventsModule, 
+    UserModule,
+    EventsModule,
     MongooseModule.forFeature([
       {
         name: Auth.name,
         schema: AuthSchema,
-      }
-    ]), 
-    JwtModule.register({})],
+      },
+    ]),
+    JwtModule.register({}),
+  ],
   providers: [AuthService, AuthModel],
   controllers: [AuthController],
 })

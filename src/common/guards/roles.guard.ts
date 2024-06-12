@@ -31,12 +31,11 @@ export class RolesGuard implements CanActivate {
       if (!isAuth) throw new UnauthorizedException('your role is wrong');
 
       return true;
-    } 
-    else if (contextType === 'ws') {
+    } else if (contextType === 'ws') {
       const client = context.switchToWs().getClient();
       const user = client.getData().user;
 
-      const isAuth = roles.some((role) => role === user.role)
+      const isAuth = roles.some((role) => role === user.role);
 
       if (!isAuth) throw new UnauthorizedException('your role is wrong');
 

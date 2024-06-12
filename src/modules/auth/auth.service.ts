@@ -60,20 +60,21 @@ export class AuthService {
       expiresIn: '1d',
     });
     const sessions = await this.authModel.getSessions(userFound.id);
-    const sessionFound =  sessions.some(session => 
-      session.userAgent === userAgent && 
-      session.ip === ip
-    )
-    if (!sessionFound) await this.authModel.createSession(userFound.id, {
-      refreshToken,
-      userAgent,
-      ip,
-      lastEntry: new Date(),
-    })
-    else await this.authModel.updateSession(userFound.id, { 
-      refreshToken,
-      lastEntry: new Date(),
-    })
+    const sessionFound = sessions.some(
+      (session) => session.userAgent === userAgent && session.ip === ip,
+    );
+    if (!sessionFound)
+      await this.authModel.createSession(userFound.id, {
+        refreshToken,
+        userAgent,
+        ip,
+        lastEntry: new Date(),
+      });
+    else
+      await this.authModel.updateSession(userFound.id, {
+        refreshToken,
+        lastEntry: new Date(),
+      });
 
     return { accessToken: accessToken, username: userFound.username };
   }
@@ -81,22 +82,25 @@ export class AuthService {
   async changePassword(id: ObjectId, data: ChangePassword) {
     const userFound = await this.userService.getUserById(id);
     if (!userFound) throw new NotFoundException('user not found!');
-    const validate = await bcrypt.compare(data.currentPassword, userFound.password);
+    const validate = await bcrypt.compare(
+      data.currentPassword,
+      userFound.password,
+    );
     if (!validate)
       throw new UnauthorizedException('the credential are invalid!');
-    if (data.currentPassword === data.newPassword) throw new BadRequestException('the passwords are equal!')
+    if (data.currentPassword === data.newPassword)
+      throw new BadRequestException('the passwords are equal!');
     data.newPassword = await bcrypt.hash(data.newPassword, 10);
-    await this.userService.updateUser(id, { password: data.newPassword })
+    await this.userService.updateUser(id, { password: data.newPassword });
   }
 
   async signout(req: Request, id: ObjectId): Promise<void> {
     const userAgent = req.headers['user-agent'];
     const ip = req.ip;
     const sessions = await this.authModel.getSessions(id);
-    const sessionFound =  sessions.find(session => 
-      session.userAgent === userAgent && 
-      session.ip === ip
-    )
+    const sessionFound = sessions.find(
+      (session) => session.userAgent === userAgent && session.ip === ip,
+    );
     await this.authModel.deleteSession(sessionFound.id);
   }
 }
