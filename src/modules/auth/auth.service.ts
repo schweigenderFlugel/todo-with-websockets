@@ -127,17 +127,21 @@ export class AuthService {
     req: Request,
     res: Response,
   ): Promise<{ accessToken: string; username: string } | undefined> {
-    const userFound = await this.userService.getUserById(user.user.id);
-    await this.removeCookie(res);
-    const payload: ITokenPayload = {
-      id: userFound.id,
-      role: userFound.role,
-    };
-    const accessToken = await this.signAccessToken(payload);
-    const refreshToken = await this.signRefreshToken(payload);
-    await this.setCookie(res, refreshToken);
-    // await this.setSession(req, user.user.id, refreshToken);
-    return { accessToken: accessToken, username: userFound.username };
+    try {
+      const userFound = await this.userService.getUserById(user.user.id);
+      await this.removeCookie(res);
+      const payload: ITokenPayload = {
+        id: userFound.id,
+        role: userFound.role,
+      };
+      const accessToken = await this.signAccessToken(payload);
+      const refreshToken = await this.signRefreshToken(payload);
+      await this.setCookie(res, refreshToken);
+      // await this.setSession(req, user.user.id, refreshToken);
+      return { accessToken: accessToken, username: userFound.username };
+    } catch (error) {
+      await this.removeCookie(res);
+    }
   }
 
   async changePassword(id: ObjectId, data: ChangePassword) {
