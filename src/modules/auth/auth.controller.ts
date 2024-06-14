@@ -35,7 +35,7 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
     @Body() auth: SignInDto,
-  ) {
+  ): Promise<{ accessToken: string }> {
     const { username, accessToken } = await this.authService.signin(
       req,
       res,
@@ -71,11 +71,11 @@ export class AuthController {
     return await this.authService.changePassword(id, data);
   }
 
-  @UseGuards(JwtGuard)
+  @UseGuards(RefreshGuard)
   @Get('signout')
   async signout(
     @Req() req: Request,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Req() user: UserRequest,
   ) {
     const id = user.user.id;

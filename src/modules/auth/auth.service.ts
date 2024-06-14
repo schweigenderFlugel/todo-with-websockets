@@ -47,7 +47,7 @@ export class AuthService {
         this.configService.nodeEnv === 'prod'
           ? this.configService.jwtRefreshSecret
           : 'refresh',
-      expiresIn: '10s',
+      expiresIn: '1d',
     });
   }
 

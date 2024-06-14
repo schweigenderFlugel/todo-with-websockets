@@ -8,6 +8,10 @@ import { ObjectId } from 'mongoose';
 export class UserService {
   constructor(@Inject(UserModel) readonly userModel: IUserModel) {}
 
+  async getAllUsers(): Promise<User[]> {
+    return await this.userModel.getAllUsers();
+  }
+
   async getUserById(id: ObjectId): Promise<User> | undefined {
     return await this.userModel.getUserById(id);
   }
@@ -16,7 +20,7 @@ export class UserService {
     return await this.userModel.getUserByEmail(email);
   }
 
-  async createUser(data: IUser): Promise<void> {
+  async createUser(data: Omit<IUser, 'role'>): Promise<void> {
     const userFoundByEmail = await this.userModel.getUserByEmail(data.email);
     if (userFoundByEmail)
       throw new ConflictException('the user already exists');

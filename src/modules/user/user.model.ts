@@ -8,6 +8,10 @@ import { IUser, IUserModel } from './user.interface';
 export class UserModel implements IUserModel {
   constructor(@InjectModel(User.name) private readonly model: Model<User>) {}
 
+  async getAllUsers(): Promise<User[]> {
+    return await this.model.find().select('email role');
+  }
+
   async getUserById(id: ObjectId): Promise<User> {
     return await this.model.findOne({
       _id: id,
@@ -26,7 +30,7 @@ export class UserModel implements IUserModel {
     });
   }
 
-  async createUser(user: IUser): Promise<void> {
+  async createUser(user: Omit<IUser, 'role'>): Promise<void> {
     const newUser = new this.model(user);
     await newUser.save();
   }
