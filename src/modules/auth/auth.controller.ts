@@ -6,8 +6,9 @@ import {
   Body,
   Req,
   UseGuards,
+  Res,
 } from '@nestjs/common';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dtos/signin.dto';
 import { SignUpDto } from './dtos/signup.dto';
@@ -15,6 +16,7 @@ import { EventsGateway } from 'src/common/websocket/events.gateway';
 import { UserRequest } from 'src/common/interfaces/auth.interface';
 import { ChangePasswordDto } from './dtos/change-password.dto';
 import { JwtGuard } from 'src/common/guards/jwt.guard';
+import { RefreshGuard } from 'src/common/guards/refresh.guard';
 
 @Controller()
 export class AuthController {
@@ -31,9 +33,30 @@ export class AuthController {
   @Post('signin')
   async login(
     @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
     @Body() auth: SignInDto,
+  ) {
+    const { username, accessToken } = await this.authService.signin(
+      req,
+      res,
+      auth,
+    );
+    this.eventsGateway.server.emit('signin', { username });
+    return { accessToken };
+  }
+
+  @UseGuards(RefreshGuard)
+  @Get('refresh')
+  async refresh(
+    @Req() user: UserRequest,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<{ accessToken: string }> {
-    const { username, accessToken } = await this.authService.signin(req, auth);
+    const { accessToken, username } = await this.authService.refresh(
+      user,
+      req,
+      res,
+    );
     this.eventsGateway.server.emit('signin', { username });
     return { accessToken };
   }
@@ -50,8 +73,12 @@ export class AuthController {
 
   @UseGuards(JwtGuard)
   @Get('signout')
-  async signout(@Req() req: Request, @Req() user: UserRequest) {
+  async signout(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Req() user: UserRequest,
+  ) {
     const id = user.user.id;
-    return await this.authService.signout(req, id);
+    return await this.authService.signout(req, res, id);
   }
 }

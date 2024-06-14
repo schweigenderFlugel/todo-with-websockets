@@ -21,8 +21,8 @@ export class JwtGuard implements CanActivate {
     private readonly jwtService: JwtService,
   ) {}
 
-  private extractTokenFromRequestHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+  private extractTokenFromRequestHeader(req: Request): string | undefined {
+    const [type, token] = req.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }
 
