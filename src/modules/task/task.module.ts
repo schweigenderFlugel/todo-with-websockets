@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Task, TaskSchema } from './schemas/task.schema';
-import { TaskItem, TaskItemSchema } from './schemas/task-item.schema';
+import { Task, TaskSchema } from './task.schema';
 
 @Module({
   imports: [
@@ -9,10 +8,6 @@ import { TaskItem, TaskItemSchema } from './schemas/task-item.schema';
       {
         name: Task.name,
         schema: TaskSchema,
-      },
-      {
-        name: TaskItem.name,
-        schema: TaskItemSchema,
       },
     ]),
   ],

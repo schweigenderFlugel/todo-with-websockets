@@ -1,7 +1,8 @@
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Item } from '../item/item.schema';
 
-@Schema()
+@Schema({ timestamps: true })
 export class Task extends Document {
   @Prop({ type: String, required: true })
   title: string;
@@ -15,11 +16,8 @@ export class Task extends Document {
   @Prop({ type: Number, required: false })
   limit: number;
 
-  @Prop({ type: Date })
-  createdAt: Date;
-
-  @Prop({ type: Date })
-  updatedAt: Date;
+  @Prop({ type: [{ type: Types.ObjectId, ref: Item.name }], required: true })
+  items: Types.Array<Item>;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);
