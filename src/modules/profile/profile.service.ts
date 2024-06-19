@@ -9,10 +9,14 @@ import { isValidObjectId } from 'mongoose';
 import { ProfileModel } from './profile.model';
 import { IProfile, IProfileModel } from './profile.interface';
 import { ProfileDto } from './profile.dto';
+import { TodoService } from '../todo/todo.service';
 
 @Injectable()
 export class ProfileService {
-  constructor(@Inject(ProfileModel) readonly profileModel: IProfileModel) {}
+  constructor(
+    @Inject(ProfileModel) readonly profileModel: IProfileModel,
+    private readonly todoService: TodoService,
+  ) {}
 
   async getProfile(userId: IProfile['userId']) {
     const isValid = isValidObjectId(userId);
@@ -29,7 +33,8 @@ export class ProfileService {
     const userFoundByEmail = await this.profileModel.getProfile(userId);
     if (userFoundByEmail)
       throw new ConflictException('the profile already exists');
-    return this.profileModel.createProfile({ userId, ...data });
+    await this.todoService.createTodo(userId);
+    return await this.profileModel.createProfile({ userId, ...data });
   }
 
   async updateProfile(

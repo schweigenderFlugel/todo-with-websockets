@@ -10,7 +10,7 @@ export interface ITodo {
 
 export interface ITodoModel {
   getTodo(userId: ObjectId): Promise<Todo>;
-  createTodo(data: ITodo): Promise<void>;
+  createTodo(userId: ObjectId): Promise<void>;
   updateTodo(
     userId: ObjectId,
     data: Partial<Omit<ITodo, 'userId'>>,

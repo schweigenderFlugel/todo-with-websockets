@@ -4,7 +4,7 @@ import { User } from '../user/user.schema';
 
 @Schema()
 export class Auth extends Document {
-  @Prop({ type: Types.ObjectId, ref: User.name })
+  @Prop({ type: Types.ObjectId, required: true, ref: User.name })
   userId: User | Types.ObjectId;
 
   @Prop({ type: String, required: true, unique: true, trim: true })

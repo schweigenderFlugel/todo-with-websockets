@@ -5,9 +5,11 @@ import { ProfileService } from './profile.service';
 import { ProfileModel } from './profile.model';
 import { ProfileController } from './profile.controller';
 import { ProfiileSchema, Profile } from './profile.schema';
+import { TodoModule } from '../todo/todo.module';
 
 @Module({
   imports: [
+    TodoModule,
     MongooseModule.forFeature([
       {
         name: Profile.name,

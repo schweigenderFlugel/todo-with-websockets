@@ -7,8 +7,8 @@ import { TodoModel } from './todo.model';
 export class TodoService {
   constructor(@Inject(TodoModel) private readonly todoModel: ITodoModel) {}
 
-  async createTodo(data: ITodo): Promise<void> {
-    return await this.todoModel.createTodo(data);
+  async createTodo(userId: ObjectId): Promise<void> {
+    return await this.todoModel.createTodo(userId);
   }
 
   async updateTodo(userId: ObjectId, data: Partial<Omit<ITodo, 'userId'>>) {

@@ -12,8 +12,8 @@ export class TodoModel implements ITodoModel {
     return await this.model.findOne({ userId: userId });
   }
 
-  async createTodo(data: ITodo): Promise<void> {
-    const newTodo = await this.model.create(data);
+  async createTodo(userId: ObjectId): Promise<void> {
+    const newTodo = await this.model.create({ userId });
     newTodo.save();
   }
 
