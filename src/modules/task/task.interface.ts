@@ -2,6 +2,7 @@ import { ObjectId } from 'mongoose';
 import { Task } from './task.schema';
 
 export interface ITask {
+  userId: ObjectId;
   title: string;
   description: string;
   timeLimit: boolean;

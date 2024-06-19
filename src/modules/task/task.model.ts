@@ -13,7 +13,9 @@ export class TaskModel implements ITaskModel {
   }
 
   async selectTask(id: ObjectId): Promise<Task> {
-    return await this.model.findById(id);
+    return await this.model
+      .findById(id)
+      .populate({ path: 'userId', select: 'username' });
   }
 
   async createTask(data: ITask): Promise<void> {

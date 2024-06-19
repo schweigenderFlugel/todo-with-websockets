@@ -9,7 +9,9 @@ import { ITask } from './task.interface';
 import { IsObjectId } from '../../common/constraints/object-id.constraint';
 import { Schema } from 'mongoose';
 
-export class TaskDto implements Omit<Omit<ITask, 'createdAt'>, 'updatedAt'> {
+export class TaskDto
+  implements Omit<Omit<Omit<ITask, 'userId'>, 'createdAt'>, 'updatedAt'>
+{
   @IsNotEmpty()
   @IsString()
   title: string;

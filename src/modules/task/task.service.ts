@@ -9,7 +9,7 @@ import { Task } from './task.schema';
 export class TaskService {
   constructor(@Inject(TaskModel) private readonly taskModel: ITaskModel) {}
 
-  async getTasks(): Promise<Task[]> {
+  async getAllTasks(): Promise<Task[]> {
     return await this.taskModel.getAllTasks();
   }
 
@@ -17,8 +17,8 @@ export class TaskService {
     return await this.taskModel.selectTask(id);
   }
 
-  async createTask(data: TaskDto): Promise<void> {
-    return await this.taskModel.createTask(data);
+  async createTask(userId: ObjectId, data: TaskDto): Promise<void> {
+    return await this.taskModel.createTask({ userId, ...data });
   }
 
   async updateTask(id: ObjectId, data: Partial<ITask>): Promise<void> {
