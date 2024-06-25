@@ -4,7 +4,7 @@ import { Profile } from '../profile/profile.schema';
 import { Task } from '../task/task.schema';
 
 @Schema()
-export class Todo extends Document {
+export class Historial extends Document {
   @Prop({ type: Types.ObjectId, required: true, ref: Profile.name })
   userId: Profile | Types.ObjectId;
 
@@ -21,4 +21,4 @@ export class Todo extends Document {
   failed: number;
 }
 
-export const TodoSchema = SchemaFactory.createForClass(Todo);
+export const HistorialSchema = SchemaFactory.createForClass(Historial);

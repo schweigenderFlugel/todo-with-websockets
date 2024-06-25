@@ -16,8 +16,11 @@ import { Task } from './task.schema';
 import { ObjectIdPipe } from 'src/common/pipes/object-id.pipe';
 import { UserRequest } from 'src/common/interfaces/auth.interface';
 import { TaskDto } from './task.dto';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/roles';
 
-@UseGuards(JwtGuard)
+@UseGuards(JwtGuard, RolesGuard)
 @Controller('tasks')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
@@ -32,6 +35,7 @@ export class TaskController {
     return await this.taskService.selectTask(id);
   }
 
+  @Roles(Role.ADMIN)
   @Post()
   async createTask(
     @Req() req: UserRequest,
@@ -41,6 +45,7 @@ export class TaskController {
     return await this.taskService.createTask(id, data);
   }
 
+  @Roles(Role.ADMIN)
   @Put(':id')
   async updateTask(
     @Param('id', ObjectIdPipe) id: ObjectId,
@@ -49,6 +54,7 @@ export class TaskController {
     return await this.taskService.updateTask(id, data);
   }
 
+  @Roles(Role.ADMIN)
   @Delete()
   async deleteTask(@Req() req: UserRequest): Promise<void> {
     const id = req.user.id;

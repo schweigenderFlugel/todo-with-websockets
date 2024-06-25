@@ -8,7 +8,7 @@ import { EventsModule } from './common/websocket/events.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ProfileModule } from './modules/profile/profile.module';
-import { TodoModule } from './modules/todo/todo.module';
+import { HistorialModule } from './modules/historial/historial.module';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { TodoModule } from './modules/todo/todo.module';
     UserModule,
     AuthModule,
     ProfileModule,
-    TodoModule,
+    HistorialModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [config],

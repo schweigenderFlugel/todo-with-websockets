@@ -5,11 +5,11 @@ import { ProfileService } from './profile.service';
 import { ProfileModel } from './profile.model';
 import { ProfileController } from './profile.controller';
 import { ProfiileSchema, Profile } from './profile.schema';
-import { TodoModule } from '../todo/todo.module';
+import { HistorialModule } from '../historial/historial.module';
 
 @Module({
   imports: [
-    TodoModule,
+    HistorialModule,
     MongooseModule.forFeature([
       {
         name: Profile.name,

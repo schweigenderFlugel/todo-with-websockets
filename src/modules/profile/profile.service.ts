@@ -9,13 +9,13 @@ import { isValidObjectId } from 'mongoose';
 import { ProfileModel } from './profile.model';
 import { IProfile, IProfileModel } from './profile.interface';
 import { ProfileDto } from './profile.dto';
-import { TodoService } from '../todo/todo.service';
+import { HistorialService } from '../historial/historial.service';
 
 @Injectable()
 export class ProfileService {
   constructor(
     @Inject(ProfileModel) readonly profileModel: IProfileModel,
-    private readonly todoService: TodoService,
+    private readonly historialService: HistorialService,
   ) {}
 
   async getProfile(userId: IProfile['userId']) {
@@ -33,7 +33,7 @@ export class ProfileService {
     const userFoundByEmail = await this.profileModel.getProfile(userId);
     if (userFoundByEmail)
       throw new ConflictException('the profile already exists');
-    await this.todoService.createTodo(userId);
+    await this.historialService.createHistorial(userId);
     return await this.profileModel.createProfile({ userId, ...data });
   }
 
