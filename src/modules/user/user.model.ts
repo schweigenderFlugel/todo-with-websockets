@@ -25,14 +25,16 @@ export class UserModel implements IUserModel {
   }
 
   async getUserByUsername(username: string): Promise<User> {
-    return await this.model.findOne({
-      username: username,
-    });
+    return await this.model
+      .findOne({
+        username: username,
+      })
+      .exec();
   }
 
-  async createUser(user: Omit<IUser, 'role'>): Promise<void> {
+  async createUser(user: Omit<IUser, 'role'>): Promise<User> {
     const newUser = new this.model(user);
-    await newUser.save();
+    return await newUser.save();
   }
 
   async updateUser(id: ObjectId, data: Partial<IUser>): Promise<void> {

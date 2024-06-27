@@ -2,17 +2,17 @@ import { ObjectId } from 'mongoose';
 import { Historial } from './historial.schema';
 
 export interface IHistorial {
-  userId: ObjectId;
   made: number;
   succeded: number;
   failed: number;
+  tasks: ObjectId | [];
 }
 
 export interface IHistorialModel {
-  getHistorial(userId: ObjectId): Promise<Historial>;
-  createHistorial(userId: ObjectId): Promise<void>;
+  getHistorial(id: ObjectId): Promise<Historial>;
+  createHistorial(data: IHistorial): Promise<Historial>;
   updateHistorial(
-    userId: ObjectId,
+    profileId: ObjectId,
     data: Partial<Omit<IHistorial, 'userId'>>,
   ): Promise<void>;
 }

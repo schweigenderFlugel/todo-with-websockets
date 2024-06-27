@@ -7,16 +7,16 @@ import { Historial } from './historial.schema';
 @Injectable()
 export class HistorialModel implements IHistorialModel {
   constructor(
-    @InjectModel(Model.name) private readonly model: Model<Historial>,
+    @InjectModel(Historial.name) private readonly model: Model<Historial>,
   ) {}
 
-  async getHistorial(userId: ObjectId): Promise<Historial> {
-    return await this.model.findOne({ userId: userId });
+  async getHistorial(id: ObjectId): Promise<Historial> {
+    return await this.model.findById(id);
   }
 
-  async createHistorial(userId: ObjectId): Promise<void> {
-    const newTodo = await this.model.create({ userId });
-    newTodo.save();
+  async createHistorial(data: IHistorial): Promise<Historial> {
+    const newTodo = await this.model.create(data);
+    return newTodo.save();
   }
 
   async updateHistorial(

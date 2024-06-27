@@ -10,7 +10,7 @@ import {
 import { Response } from 'express';
 import { JsonWebTokenError, JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { ConfigType } from '@nestjs/config';
-import config from '../../../config';
+import config from '../../config';
 import { ITokenPayload } from '../interfaces/auth.interface';
 import { CookieOptions } from 'express';
 

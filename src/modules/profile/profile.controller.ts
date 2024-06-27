@@ -6,11 +6,16 @@ import {
   Body,
   Req,
   UseGuards,
+  Param,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
-import { ProfileDto } from './profile.dto';
+import { CreateProfileDto, UpdateProfileDto } from './profile.dto';
 import { JwtGuard } from 'src/common/guards/jwt.guard';
 import { UserRequest } from 'src/common/interfaces/auth.interface';
+import { Role } from 'src/common/enums/roles';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { ObjectIdPipe } from 'src/common/pipes/object-id.pipe';
+import { ObjectId } from 'mongoose';
 
 @UseGuards(JwtGuard)
 @Controller('profile')
@@ -24,14 +29,23 @@ export class ProfileController {
   }
 
   @Post()
-  async createProfile(@Req() req: UserRequest, @Body() data: ProfileDto) {
+  async createProfile(@Req() req: UserRequest, @Body() data: CreateProfileDto) {
     const userId = req.user.id;
     return this.profileService.createProfile(userId, data);
   }
 
   @Put()
-  async updateProfile(@Req() req: UserRequest, @Body() data: ProfileDto) {
+  async updateProfile(@Req() req: UserRequest, @Body() data: UpdateProfileDto) {
     const userId = req.user.id;
+    return this.profileService.updateProfile(userId, data);
+  }
+
+  @Roles(Role.ADMIN)
+  @Put('task-assigment/:id')
+  async assignTasks(
+    @Param('id', ObjectIdPipe) userId: ObjectId,
+    @Body() data: UpdateProfileDto,
+  ) {
     return this.profileService.updateProfile(userId, data);
   }
 }

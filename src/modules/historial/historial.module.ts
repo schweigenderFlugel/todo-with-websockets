@@ -1,14 +1,13 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { JwtService } from '@nestjs/jwt';
 import { HistorialService } from './historial.service';
 import { HistorialModel } from './historial.model';
 import { Historial, HistorialSchema } from './historial.schema';
-import { UserModule } from '../user/user.module';
 import { HistorialController } from './historial.controller';
 
 @Module({
   imports: [
-    UserModule,
     MongooseModule.forFeature([
       {
         name: Historial.name,
@@ -16,7 +15,7 @@ import { HistorialController } from './historial.controller';
       },
     ]),
   ],
-  providers: [HistorialService, HistorialModel],
+  providers: [HistorialService, HistorialModel, JwtService],
   controllers: [HistorialController],
   exports: [HistorialService],
 })

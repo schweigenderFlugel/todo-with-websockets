@@ -1,7 +1,7 @@
 import { FactoryProvider } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { v2 as cloudinary } from 'cloudinary';
-import config from '../../../config';
+import config from '../../config';
 
 export const CloudinaryProvider: FactoryProvider = {
   provide: 'CLOUDINARY',

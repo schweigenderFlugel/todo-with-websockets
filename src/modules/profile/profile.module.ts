@@ -19,5 +19,6 @@ import { HistorialModule } from '../historial/historial.module';
   ],
   providers: [ProfileService, ProfileModel, JwtService],
   controllers: [ProfileController],
+  exports: [ProfileService],
 })
 export class ProfileModule {}

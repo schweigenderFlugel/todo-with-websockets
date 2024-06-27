@@ -12,20 +12,23 @@ export class ProfileModel implements IProfileModel {
 
   async getProfile(userId: ObjectId): Promise<Profile> {
     return await this.model
-      .findOne({ userId: userId })
-      .populate({ path: 'userId', select: 'email' })
+      .findOne({ user: userId })
+      .populate({ path: 'user', select: 'email username' })
+      .populate({ path: 'historial' })
+      .populate({ path: 'tasks' })
       .exec();
   }
 
-  async createProfile(data: IProfile): Promise<void> {
-    const newProfile = await this.model.create(data);
-    newProfile.save();
+  async createProfile(data: IProfile): Promise<Profile> {
+    const newProfile = await this.model.create({ user: data.userId, ...data });
+    return newProfile.save();
   }
 
   async updateProfile(
     userId: ObjectId,
     data: Partial<IProfile>,
   ): Promise<void> {
+    console.log(data);
     await this.model.findOneAndUpdate(userId, data);
   }
 }

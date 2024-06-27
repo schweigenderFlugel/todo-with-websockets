@@ -17,8 +17,8 @@ export class TaskService {
     return await this.taskModel.selectTask(id);
   }
 
-  async createTask(userId: ObjectId, data: TaskDto): Promise<void> {
-    return await this.taskModel.createTask({ userId, ...data });
+  async createTask(data: TaskDto): Promise<void> {
+    return await this.taskModel.createTask(data);
   }
 
   async updateTask(id: ObjectId, data: Partial<ITask>): Promise<void> {

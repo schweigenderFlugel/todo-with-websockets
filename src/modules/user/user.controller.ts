@@ -7,6 +7,7 @@ import { Role } from 'src/common/enums/roles';
 import { User } from './user.schema';
 import { ObjectId } from 'mongoose';
 import { UserDto } from './user.dto';
+import { ObjectIdPipe } from 'src/common/pipes/object-id.pipe';
 
 @UseGuards(JwtGuard, RolesGuard)
 @Controller('user')
@@ -22,7 +23,7 @@ export class UserController {
   @Roles(Role.ADMIN)
   @Put(':id')
   async asignAdminRole(
-    @Param('id') id: ObjectId,
+    @Param('id', ObjectIdPipe) id: ObjectId,
     @Body() data: UserDto,
   ): Promise<void> {
     return await this.userService.updateUser(id, data);

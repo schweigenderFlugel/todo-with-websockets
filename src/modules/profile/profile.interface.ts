@@ -6,10 +6,12 @@ export interface IProfile {
   name: string;
   lastname: string;
   description: string;
+  historial: ObjectId;
+  tasks: ObjectId[];
 }
 
 export interface IProfileModel {
   getProfile(userId: IProfile['userId']): Promise<Profile>;
-  createProfile(data: IProfile): Promise<void>;
+  createProfile(data: Omit<IProfile, 'tasks'>): Promise<Profile>;
   updateProfile(userId: ObjectId, data: Partial<IProfile>): Promise<void>;
 }

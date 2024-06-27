@@ -19,6 +19,6 @@ export interface IUserModel {
   getUserById(id: ObjectId): Promise<User>;
   getUserByEmail(email: IUser['email']): Promise<User>;
   getUserByUsername(username: IUser['username']): Promise<User>;
-  createUser(data: Omit<IUser, 'role'>): Promise<void>;
+  createUser(data: Omit<IUser, 'role'>): Promise<User>;
   updateUser(id: ObjectId, data: Partial<IUser>): Promise<void>;
 }

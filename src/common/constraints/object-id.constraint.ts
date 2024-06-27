@@ -17,7 +17,7 @@ export class IsObjectIdConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage(validationArguments?: ValidationArguments): string {
-    return 'The is not is a valid ObjectId';
+    return 'The id not is a valid ObjectId';
   }
 }
 

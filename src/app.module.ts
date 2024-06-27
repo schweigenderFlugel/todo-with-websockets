@@ -2,13 +2,15 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './modules/user/user.module';
 import { ConfigModule, ConfigType } from '@nestjs/config';
-import config from '../config';
+import config from './config';
 import { AuthModule } from './modules/auth/auth.module';
 import { EventsModule } from './common/websocket/events.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ProfileModule } from './modules/profile/profile.module';
 import { HistorialModule } from './modules/historial/historial.module';
+import { TaskModule } from './modules/task/task.module';
+import { ItemModule } from './modules/item/item.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { HistorialModule } from './modules/historial/historial.module';
     AuthModule,
     ProfileModule,
     HistorialModule,
+    TaskModule,
+    ItemModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [config],

@@ -12,7 +12,7 @@ import { ObjectId } from 'mongoose';
 import { CookieOptions, Request, Response } from 'express';
 import { UserService } from 'src/modules/user/user.service';
 import { SignInDto } from './dtos/signin.dto';
-import config from '../../../config';
+import config from '../../config';
 import { SignUpDto } from './dtos/signup.dto';
 import {
   ITokenPayload,

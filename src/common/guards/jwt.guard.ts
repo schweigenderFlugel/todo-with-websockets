@@ -9,7 +9,7 @@ import {
 import { JsonWebTokenError, JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { ConfigType } from '@nestjs/config';
 import { Request } from 'express';
-import config from '../../../config';
+import config from '../../config';
 import { ITokenPayload } from '../interfaces/auth.interface';
 import { Socket } from 'socket.io';
 

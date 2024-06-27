@@ -8,7 +8,7 @@ import {
 import { isValidObjectId } from 'mongoose';
 import { ProfileModel } from './profile.model';
 import { IProfile, IProfileModel } from './profile.interface';
-import { ProfileDto } from './profile.dto';
+import { CreateProfileDto, UpdateProfileDto } from './profile.dto';
 import { HistorialService } from '../historial/historial.service';
 
 @Injectable()
@@ -28,23 +28,28 @@ export class ProfileService {
 
   async createProfile(
     userId: IProfile['userId'],
-    data: ProfileDto,
+    data: CreateProfileDto,
   ): Promise<void> {
     const userFoundByEmail = await this.profileModel.getProfile(userId);
     if (userFoundByEmail)
       throw new ConflictException('the profile already exists');
-    await this.historialService.createHistorial(userId);
-    return await this.profileModel.createProfile({ userId, ...data });
+    const { id: historialId } = await this.historialService.createHistorial();
+    await this.profileModel.createProfile({
+      userId,
+      historial: historialId,
+      ...data,
+    });
   }
 
   async updateProfile(
     userId: IProfile['userId'],
-    data: Partial<ProfileDto>,
+    data: UpdateProfileDto,
   ): Promise<void> {
     const isValid = isValidObjectId(userId);
     if (!isValid) throw new NotAcceptableException('id invalid!');
     const profileFound = await this.profileModel.getProfile(userId);
     if (!profileFound) throw new NotFoundException('profile not found!');
+    if (data.task) profileFound.tasks.push(data.task);
     return await this.profileModel.updateProfile(userId, data);
   }
 }

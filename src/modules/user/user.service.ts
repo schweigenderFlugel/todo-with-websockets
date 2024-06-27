@@ -6,7 +6,7 @@ import { ObjectId } from 'mongoose';
 
 @Injectable()
 export class UserService {
-  constructor(@Inject(UserModel) readonly userModel: IUserModel) {}
+  constructor(@Inject(UserModel) private readonly userModel: IUserModel) {}
 
   async getAllUsers(): Promise<User[]> {
     return await this.userModel.getAllUsers();
@@ -29,7 +29,7 @@ export class UserService {
     );
     if (userFoundByUsername)
       throw new ConflictException('the username must be unique');
-    return this.userModel.createUser(data);
+    await this.userModel.createUser(data);
   }
 
   async updateUser(id: ObjectId, data: Partial<IUser>) {

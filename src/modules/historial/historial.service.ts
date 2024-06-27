@@ -14,8 +14,14 @@ export class HistorialService {
     return await this.historialModel.getHistorial(id);
   }
 
-  async createHistorial(userId: ObjectId): Promise<void> {
-    return await this.historialModel.createHistorial(userId);
+  async createHistorial(): Promise<Historial> {
+    const data: IHistorial = {
+      made: 0,
+      succeded: 0,
+      failed: 0,
+      tasks: [],
+    };
+    return await this.historialModel.createHistorial(data);
   }
 
   async updateHistorial(

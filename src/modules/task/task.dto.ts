@@ -4,6 +4,7 @@ import {
   IsNumber,
   IsArray,
   IsBoolean,
+  IsOptional,
 } from 'class-validator';
 import { ITask } from './task.interface';
 import { IsObjectId } from '../../common/constraints/object-id.constraint';
@@ -24,12 +25,11 @@ export class TaskDto
   @IsBoolean()
   timeLimit: boolean;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   limit: number;
 
   @IsNotEmpty()
   @IsArray()
-  @IsObjectId()
   items: Schema.Types.ObjectId[];
 }
