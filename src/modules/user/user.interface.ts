@@ -9,11 +9,6 @@ export interface IUser {
   role: Role;
 }
 
-export interface ChangePassword {
-  currentPassword: string;
-  newPassword: string;
-}
-
 export interface IUserModel {
   getAllUsers(): Promise<User[]>;
   getUserById(id: ObjectId): Promise<User>;

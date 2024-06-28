@@ -11,5 +11,8 @@ export class Item extends Document {
 
   @Prop({ type: Types.Array, required: true, default: [] })
   requirements: string[];
+
+  @Prop({ type: String, required: false })
+  details: string;
 }
 export const ItemSchema = SchemaFactory.createForClass(Item);

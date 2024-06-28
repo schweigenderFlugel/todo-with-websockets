@@ -17,7 +17,7 @@ export class Task extends Document {
   limit: number;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: Item.name }], required: true })
-  items: Item[] | Types.ObjectId[];
+  items: Types.Array<Item> | Types.ObjectId[];
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

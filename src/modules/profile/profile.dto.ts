@@ -31,7 +31,7 @@ export class CreateProfileDto {
 }
 
 export class UpdateProfileDto extends PartialType(CreateProfileDto) {
-  @IsNotEmpty()
+  @IsOptional()
   @IsObjectId()
   task: ObjectId;
 }

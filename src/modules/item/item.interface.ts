@@ -5,6 +5,7 @@ export interface IItem {
   title: string;
   description: string;
   requirements: string[];
+  details: string;
 }
 
 export interface IItemModel {

@@ -18,7 +18,7 @@ import {
   ITokenPayload,
   UserRequest,
 } from '../../common/interfaces/auth.interface';
-import { ChangePassword } from '../user/user.interface';
+import { ChangePassword } from './auth.interface';
 import { AuthModel } from './auth.model';
 
 @Injectable()

@@ -8,6 +8,11 @@ export interface IAuth {
   lastEntry: Date;
 }
 
+export interface ChangePassword {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export interface IAuthModel {
   getSessions(id: ObjectId): Promise<Auth[]>;
   createSession(id: ObjectId, data: IAuth): Promise<void>;

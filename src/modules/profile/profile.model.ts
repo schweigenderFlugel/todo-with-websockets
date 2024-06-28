@@ -20,15 +20,11 @@ export class ProfileModel implements IProfileModel {
   }
 
   async createProfile(data: IProfile): Promise<Profile> {
-    const newProfile = await this.model.create({ user: data.userId, ...data });
+    const newProfile = await this.model.create({ user: data.user, ...data });
     return newProfile.save();
   }
 
-  async updateProfile(
-    userId: ObjectId,
-    data: Partial<IProfile>,
-  ): Promise<void> {
-    console.log(data);
-    await this.model.findOneAndUpdate(userId, data);
+  async updateProfile(user: ObjectId, data: Partial<IProfile>): Promise<void> {
+    await this.model.findOneAndUpdate(user, data);
   }
 }

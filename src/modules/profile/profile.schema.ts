@@ -4,7 +4,7 @@ import { User } from '../user/user.schema';
 import { Task } from '../task/task.schema';
 import { Historial } from '../historial/historial.schema';
 
-@Schema()
+@Schema({ timestamps: true })
 export class Profile extends Document {
   @Prop({ type: Types.ObjectId, ref: User.name })
   user: User | Types.ObjectId;
@@ -26,7 +26,7 @@ export class Profile extends Document {
     required: true,
     default: [],
   })
-  tasks: Types.Array<Task>;
+  tasks: Types.Array<Task> | Types.Array<Types.ObjectId>;
 }
 
 export const ProfiileSchema = SchemaFactory.createForClass(Profile);

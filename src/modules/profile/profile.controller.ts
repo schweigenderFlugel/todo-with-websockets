@@ -43,9 +43,9 @@ export class ProfileController {
   @Roles(Role.ADMIN)
   @Put('task-assigment/:id')
   async assignTasks(
-    @Param('id', ObjectIdPipe) userId: ObjectId,
+    @Param('id', ObjectIdPipe) user: ObjectId,
     @Body() data: UpdateProfileDto,
   ) {
-    return this.profileService.updateProfile(userId, data);
+    return this.profileService.updateProfile(user, data);
   }
 }
