@@ -16,10 +16,9 @@ export class HistorialService {
 
   async createHistorial(): Promise<Historial> {
     const data: IHistorial = {
-      made: 0,
-      succeded: 0,
-      failed: 0,
-      tasks: [],
+      made: [],
+      succeded: [],
+      failed: [],
     };
     return await this.historialModel.createHistorial(data);
   }
@@ -31,17 +30,7 @@ export class HistorialService {
     const todoFound = await this.historialModel.getHistorial(userId);
     if (!todoFound) throw new NotFoundException('todo not found!');
     let payload: Partial<IHistorial>;
-    if (data.succeded) {
-      payload = {
-        made: todoFound.made + 1,
-        succeded: todoFound.succeded + 1,
-      };
-    } else if (data.failed) {
-      payload = {
-        made: todoFound.made + 1,
-        failed: todoFound.failed + 1,
-      };
-    }
+    let succeded: boolean;
     return await this.historialModel.updateHistorial(userId, payload);
   }
 }

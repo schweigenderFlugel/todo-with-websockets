@@ -3,6 +3,8 @@ import { Model, ObjectId } from 'mongoose';
 import { Profile } from './profile.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { IProfile, IProfileModel } from './profile.interface';
+import { Task } from '../task/task.schema';
+import { Item } from '../item/item.schema';
 
 @Injectable()
 export class ProfileModel implements IProfileModel {
@@ -10,12 +12,21 @@ export class ProfileModel implements IProfileModel {
     @InjectModel(Profile.name) private readonly model: Model<Profile>,
   ) {}
 
-  async getProfile(userId: ObjectId): Promise<Profile> {
+  async getProfile(user: ObjectId): Promise<Profile> {
     return await this.model
-      .findOne({ user: userId })
+      .findOne({ user: user })
       .populate({ path: 'user', select: 'email username' })
-      .populate({ path: 'historial' })
-      .populate({ path: 'tasks' })
+      .populate({ path: 'historial', select: 'made succeded failed tasks' })
+      .populate({
+        path: 'tasks',
+        model: Task.name,
+        select: 'title description timeLimit limit',
+        populate: {
+          path: 'items',
+          model: Item.name,
+          select: 'title description requirements',
+        },
+      })
       .exec();
   }
 

@@ -1,7 +1,7 @@
 import { Document, Types } from 'mongoose';
 import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
 
-@Schema()
+@Schema({ timestamps: true })
 export class Item extends Document {
   @Prop({ type: String, required: true })
   title: string;

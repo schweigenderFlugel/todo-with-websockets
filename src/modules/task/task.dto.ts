@@ -7,8 +7,7 @@ import {
   IsOptional,
 } from 'class-validator';
 import { ITask } from './task.interface';
-import { IsObjectId } from '../../common/constraints/object-id.constraint';
-import { Schema } from 'mongoose';
+import { ObjectId } from 'mongoose';
 
 export class TaskDto
   implements Omit<Omit<Omit<ITask, 'userId'>, 'createdAt'>, 'updatedAt'>
@@ -31,5 +30,5 @@ export class TaskDto
 
   @IsNotEmpty()
   @IsArray()
-  items: Schema.Types.ObjectId[];
+  items: ObjectId[];
 }

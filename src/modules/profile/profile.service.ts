@@ -11,6 +11,7 @@ import { IProfile, IProfileModel } from './profile.interface';
 import { CreateProfileDto, TaskAssigmentDto, UpdateProfileDto } from './dtos';
 import { HistorialService } from '../historial/historial.service';
 import { TaskService } from '../task/task.service';
+import { Profile } from './profile.schema';
 
 @Injectable()
 export class ProfileService {
@@ -20,7 +21,7 @@ export class ProfileService {
     private readonly taskService: TaskService,
   ) {}
 
-  async getProfile(user: IProfile['user']) {
+  async getProfile(user: IProfile['user']): Promise<Profile> {
     const isValid = isValidObjectId(user);
     if (!isValid) throw new NotAcceptableException('id invalid!');
     const profileFound = await this.profileModel.getProfile(user);

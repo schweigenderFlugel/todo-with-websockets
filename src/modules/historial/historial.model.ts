@@ -15,13 +15,13 @@ export class HistorialModel implements IHistorialModel {
   }
 
   async createHistorial(data: IHistorial): Promise<Historial> {
-    const newTodo = await this.model.create(data);
-    return newTodo.save();
+    const newHistorial = await this.model.create(data);
+    return newHistorial.save();
   }
 
   async updateHistorial(
     userId: ObjectId,
-    data: Partial<Omit<IHistorial, 'userId'>>,
+    data: Partial<IHistorial>,
   ): Promise<void> {
     await this.model.findOneAndUpdate(userId, data);
   }
