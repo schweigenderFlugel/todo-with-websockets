@@ -5,9 +5,13 @@ import {
   IsArray,
   IsBoolean,
   IsOptional,
+  IsMongoId,
+  ArrayMinSize,
+  ValidateNested,
 } from 'class-validator';
 import { ITask } from './task.interface';
 import { ObjectId } from 'mongoose';
+import { Type } from 'class-transformer';
 
 export class TaskDto
   implements Omit<Omit<Omit<ITask, 'userId'>, 'createdAt'>, 'updatedAt'>
@@ -30,5 +34,8 @@ export class TaskDto
 
   @IsNotEmpty()
   @IsArray()
+  @ArrayMinSize(1)
+  @ValidateNested({ each: true })
+  @IsMongoId({ each: true })
   items: ObjectId[];
 }
