@@ -10,13 +10,10 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
-import { SignInDto } from './dtos/signin.dto';
-import { SignUpDto } from './dtos/signup.dto';
+import { SignInDto, SignUpDto, ChangePasswordDto } from './dtos';
 import { EventsGateway } from 'src/common/websocket/events.gateway';
 import { UserRequest } from 'src/common/interfaces/auth.interface';
-import { ChangePasswordDto } from './dtos/change-password.dto';
-import { JwtGuard } from 'src/common/guards/jwt.guard';
-import { RefreshGuard } from 'src/common/guards/refresh.guard';
+import { JwtGuard, RefreshGuard } from 'src/common/guards';
 
 @Controller()
 export class AuthController {

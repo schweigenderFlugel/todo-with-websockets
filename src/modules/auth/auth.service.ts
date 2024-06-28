@@ -114,6 +114,8 @@ export class AuthService {
     const validate = await bcrypt.compare(data.password, userFound.password);
     if (!validate)
       throw new UnauthorizedException('the credential are invalid!');
+    if (!userFound.active)
+      throw new UnauthorizedException('this account is not active');
     const payload: ITokenPayload = { id: userFound.id, role: userFound.role };
     const accessToken = await this.signAccessToken(payload);
     const refreshToken = await this.signRefreshToken(payload);

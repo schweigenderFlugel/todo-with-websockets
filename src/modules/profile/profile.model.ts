@@ -25,6 +25,9 @@ export class ProfileModel implements IProfileModel {
   }
 
   async updateProfile(user: ObjectId, data: Partial<IProfile>): Promise<void> {
-    await this.model.findOneAndUpdate(user, data);
+    await this.model.findOneAndUpdate(
+      { user: user },
+      data?.task ? { $push: { tasks: data.task } } : { ...data },
+    );
   }
 }

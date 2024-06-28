@@ -9,8 +9,8 @@ import {
   Param,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
-import { CreateProfileDto, UpdateProfileDto } from './profile.dto';
-import { JwtGuard } from 'src/common/guards/jwt.guard';
+import { CreateProfileDto, UpdateProfileDto, TaskAssigmentDto } from './dtos';
+import { JwtGuard } from 'src/common/guards';
 import { UserRequest } from 'src/common/interfaces/auth.interface';
 import { Role } from 'src/common/enums/roles';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -36,16 +36,16 @@ export class ProfileController {
 
   @Put()
   async updateProfile(@Req() req: UserRequest, @Body() data: UpdateProfileDto) {
-    const userId = req.user.id;
-    return this.profileService.updateProfile(userId, data);
+    const user = req.user.id;
+    return this.profileService.updateProfile({ user, data });
   }
 
   @Roles(Role.ADMIN)
   @Put('task-assigment/:id')
   async assignTasks(
     @Param('id', ObjectIdPipe) user: ObjectId,
-    @Body() data: UpdateProfileDto,
+    @Body() task: TaskAssigmentDto,
   ) {
-    return this.profileService.updateProfile(user, data);
+    return this.profileService.updateProfile({ user, task });
   }
 }

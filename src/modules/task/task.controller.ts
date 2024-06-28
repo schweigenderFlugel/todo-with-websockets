@@ -11,12 +11,11 @@ import {
 } from '@nestjs/common';
 import { ObjectId } from 'mongoose';
 import { TaskService } from './task.service';
-import { JwtGuard } from 'src/common/guards/jwt.guard';
+import { JwtGuard, RolesGuard } from 'src/common/guards';
 import { Task } from './task.schema';
 import { ObjectIdPipe } from 'src/common/pipes/object-id.pipe';
 import { UserRequest } from 'src/common/interfaces/auth.interface';
 import { TaskDto } from './task.dto';
-import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/roles';
 

@@ -4,16 +4,18 @@ import { JwtService } from '@nestjs/jwt';
 import { ProfileService } from './profile.service';
 import { ProfileModel } from './profile.model';
 import { ProfileController } from './profile.controller';
-import { ProfiileSchema, Profile } from './profile.schema';
+import { ProfileSchema, Profile } from './profile.schema';
 import { HistorialModule } from '../historial/historial.module';
+import { TaskModule } from '../task/task.module';
 
 @Module({
   imports: [
     HistorialModule,
+    TaskModule,
     MongooseModule.forFeature([
       {
         name: Profile.name,
-        schema: ProfiileSchema,
+        schema: ProfileSchema,
       },
     ]),
   ],

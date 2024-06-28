@@ -7,10 +7,11 @@ export interface IProfile {
   lastname: string;
   description: string;
   historial: ObjectId;
+  task: ObjectId;
 }
 
 export interface IProfileModel {
   getProfile(userId: IProfile['user']): Promise<Profile>;
-  createProfile(data: IProfile): Promise<Profile>;
+  createProfile(data: Omit<IProfile, 'task'>): Promise<Profile>;
   updateProfile(userId: ObjectId, data: Partial<IProfile>): Promise<void>;
 }

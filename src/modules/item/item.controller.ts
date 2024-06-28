@@ -11,8 +11,7 @@ import { ItemService } from './item.service';
 import { ObjectIdPipe } from 'src/common/pipes/object-id.pipe';
 import { ObjectId } from 'mongoose';
 import { CreateItemDto } from './item.dto';
-import { JwtGuard } from 'src/common/guards/jwt.guard';
-import { RolesGuard } from 'src/common/guards/roles.guard';
+import { JwtGuard, RolesGuard } from 'src/common/guards';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/roles';
 

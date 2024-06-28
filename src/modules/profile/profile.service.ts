@@ -8,14 +8,16 @@ import {
 import { isValidObjectId } from 'mongoose';
 import { ProfileModel } from './profile.model';
 import { IProfile, IProfileModel } from './profile.interface';
-import { CreateProfileDto, UpdateProfileDto } from './profile.dto';
+import { CreateProfileDto, TaskAssigmentDto, UpdateProfileDto } from './dtos';
 import { HistorialService } from '../historial/historial.service';
+import { TaskService } from '../task/task.service';
 
 @Injectable()
 export class ProfileService {
   constructor(
     @Inject(ProfileModel) readonly profileModel: IProfileModel,
     private readonly historialService: HistorialService,
+    private readonly taskService: TaskService,
   ) {}
 
   async getProfile(user: IProfile['user']) {
@@ -41,15 +43,32 @@ export class ProfileService {
     });
   }
 
-  async updateProfile(
-    user: IProfile['user'],
-    data: UpdateProfileDto,
-  ): Promise<void> {
+  async updateProfile({
+    user,
+    data,
+    task,
+  }: {
+    user: IProfile['user'];
+    data?: UpdateProfileDto;
+    task?: TaskAssigmentDto;
+  }): Promise<void> {
     const isValid = isValidObjectId(user);
     if (!isValid) throw new NotAcceptableException('id invalid!');
     const profileFound = await this.profileModel.getProfile(user);
     if (!profileFound) throw new NotFoundException('profile not found!');
-    if (data.task) profileFound.tasks.push(data.task);
-    return await this.profileModel.updateProfile(user, data);
+    // ONLY TASKS ASSIGMENTS
+    if (task) {
+      const taskFound = await this.taskService.selectTask(task.task);
+      if (!taskFound) throw new NotFoundException('task not found!');
+      else {
+        const assigned = profileFound.tasks.some(
+          (item: any) => item === task.task,
+        );
+        if (assigned)
+          throw new ConflictException('this task was already assigned');
+        await this.profileModel.updateProfile(user, task);
+      }
+    }
+    await this.profileModel.updateProfile(user, data);
   }
 }

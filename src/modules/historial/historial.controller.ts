@@ -12,7 +12,7 @@ import { HistorialService } from './historial.service';
 import { ObjectIdPipe } from 'src/common/pipes/object-id.pipe';
 import { Historial } from './historial.schema';
 import { UserRequest } from 'src/common/interfaces/auth.interface';
-import { JwtGuard } from 'src/common/guards/jwt.guard';
+import { JwtGuard } from 'src/common/guards';
 
 @UseGuards(JwtGuard)
 @Controller('historial')

@@ -29,4 +29,4 @@ export class Profile extends Document {
   tasks: Types.Array<Task> | Types.Array<Types.ObjectId>;
 }
 
-export const ProfiileSchema = SchemaFactory.createForClass(Profile);
+export const ProfileSchema = SchemaFactory.createForClass(Profile);

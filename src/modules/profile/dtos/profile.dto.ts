@@ -1,7 +1,5 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { IsString, IsNotEmpty, Matches, IsOptional } from 'class-validator';
-import { ObjectId } from 'mongoose';
-import { IsObjectId } from 'src/common/constraints/object-id.constraint';
 
 enum ErrorMessages {
   INVALID_NAME_ERROR = 'the name should not contain any number or special character',
@@ -30,8 +28,4 @@ export class CreateProfileDto {
   description: string;
 }
 
-export class UpdateProfileDto extends PartialType(CreateProfileDto) {
-  @IsOptional()
-  @IsObjectId()
-  task: ObjectId;
-}
+export class UpdateProfileDto extends PartialType(CreateProfileDto) {}
