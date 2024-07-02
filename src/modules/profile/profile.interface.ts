@@ -13,5 +13,9 @@ export interface IProfile {
 export interface IProfileModel {
   getProfile(userId: IProfile['user']): Promise<Profile>;
   createProfile(data: Omit<IProfile, 'task'>): Promise<Profile>;
-  updateProfile(userId: ObjectId, data: Partial<IProfile>): Promise<void>;
+  updateProfile(
+    userId: ObjectId,
+    data: Partial<IProfile>,
+    assignment?: boolean,
+  ): Promise<void>;
 }

@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ObjectId } from 'mongoose';
 import { TaskModel } from './task.model';
-import { TaskDto } from './task.dto';
+import { CreateTaskDto } from './task.dto';
 import { ITask, ITaskModel } from './task.interface';
 import { Task } from './task.schema';
 
@@ -17,13 +17,17 @@ export class TaskService {
     return await this.taskModel.selectTask(id);
   }
 
-  async createTask(data: TaskDto): Promise<void> {
+  async createTask(data: CreateTaskDto): Promise<void> {
     return await this.taskModel.createTask(data);
   }
 
-  async updateTask(id: ObjectId, data: Partial<ITask>): Promise<void> {
+  async updateTask(
+    id: ObjectId,
+    data: Partial<ITask>,
+    assignment?: boolean,
+  ): Promise<void> {
     data.updatedAt = new Date();
-    return await this.taskModel.updateTask(id, data);
+    return await this.taskModel.updateTask(id, data, assignment);
   }
 
   async deleteTask(id: ObjectId): Promise<void> {

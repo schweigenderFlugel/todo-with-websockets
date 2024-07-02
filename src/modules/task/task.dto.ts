@@ -8,14 +8,13 @@ import {
   IsMongoId,
   ArrayMinSize,
   ValidateNested,
+  IsEnum,
 } from 'class-validator';
-import { ITask } from './task.interface';
 import { ObjectId } from 'mongoose';
-import { Type } from 'class-transformer';
+import { ChallengeType } from './challenge-type.enum';
+import { PartialType } from '@nestjs/mapped-types';
 
-export class TaskDto
-  implements Omit<Omit<Omit<ITask, 'userId'>, 'createdAt'>, 'updatedAt'>
-{
+export class CreateTaskDto {
   @IsNotEmpty()
   @IsString()
   title: string;
@@ -28,6 +27,10 @@ export class TaskDto
   @IsBoolean()
   timeLimit: boolean;
 
+  @IsNotEmpty()
+  @IsEnum(ChallengeType)
+  challengeType: ChallengeType;
+
   @IsOptional()
   @IsNumber()
   limit: number;
@@ -39,3 +42,5 @@ export class TaskDto
   @IsMongoId({ each: true })
   items: ObjectId[];
 }
+
+export class UpdateTaskDto extends PartialType(CreateTaskDto) {}

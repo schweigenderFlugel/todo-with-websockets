@@ -17,6 +17,7 @@ export class TaskModel implements ITaskModel {
     return await this.model
       .findById(id)
       .populate({ path: 'items', model: Item.name })
+      .select('-users')
       .exec();
   }
 
@@ -25,8 +26,19 @@ export class TaskModel implements ITaskModel {
     newTask.save();
   }
 
-  async updateTask(id: ObjectId, data: Partial<ITask>): Promise<void> {
-    return await this.model.findByIdAndUpdate(id, data);
+  async updateTask(
+    id: ObjectId,
+    data: Partial<ITask>,
+    assignment?: boolean,
+  ): Promise<void> {
+    return await this.model.findByIdAndUpdate(
+      id,
+      data.user
+        ? assignment
+          ? { $push: { users: data.user } }
+          : { $pull: { users: data.user } }
+        : { ...data },
+    );
   }
 
   async deleteTask(id: ObjectId): Promise<void> {

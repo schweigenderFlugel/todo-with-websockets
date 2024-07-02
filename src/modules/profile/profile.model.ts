@@ -35,10 +35,18 @@ export class ProfileModel implements IProfileModel {
     return newProfile.save();
   }
 
-  async updateProfile(user: ObjectId, data: Partial<IProfile>): Promise<void> {
+  async updateProfile(
+    user: ObjectId,
+    data: Partial<IProfile>,
+    assignment: boolean,
+  ): Promise<void> {
     await this.model.findOneAndUpdate(
       { user: user },
-      data?.task ? { $push: { tasks: data.task } } : { ...data },
+      data?.task
+        ? assignment === true
+          ? { $push: { tasks: data.task } }
+          : { $pull: { tasks: data.task } }
+        : { ...data },
     );
   }
 }

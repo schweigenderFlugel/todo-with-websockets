@@ -41,11 +41,20 @@ export class ProfileController {
   }
 
   @Roles(Role.ADMIN)
-  @Put('task-assigment/:id')
+  @Put('task-assignment/:id')
   async assignTasks(
     @Param('id', ObjectIdPipe) user: ObjectId,
     @Body() task: TaskAssigmentDto,
   ) {
-    return this.profileService.updateProfile({ user, task });
+    return this.profileService.updateProfile({ user, task, assignment: true });
+  }
+
+  @Roles(Role.ADMIN)
+  @Put('task-rejection/:id')
+  async rejectTasks(
+    @Param('id', ObjectIdPipe) user: ObjectId,
+    @Body() task: TaskAssigmentDto,
+  ) {
+    return this.profileService.updateProfile({ user, task, assignment: false });
   }
 }

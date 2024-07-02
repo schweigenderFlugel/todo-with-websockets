@@ -48,27 +48,29 @@ export class ProfileService {
     user,
     data,
     task,
+    assignment,
   }: {
     user: IProfile['user'];
     data?: UpdateProfileDto;
     task?: TaskAssigmentDto;
+    assignment?: boolean;
   }): Promise<void> {
     const isValid = isValidObjectId(user);
     if (!isValid) throw new NotAcceptableException('id invalid!');
     const profileFound = await this.profileModel.getProfile(user);
     if (!profileFound) throw new NotFoundException('profile not found!');
     // ONLY TASKS ASSIGMENTS
-    if (task) {
-      const taskFound = await this.taskService.selectTask(task.task);
-      if (!taskFound) throw new NotFoundException('task not found!');
-      else {
-        const assigned = profileFound.tasks.some(
-          (item: any) => item === task.task,
-        );
-        if (assigned)
-          throw new ConflictException('this task was already assigned');
-        await this.profileModel.updateProfile(user, task);
-      }
+    if (task && assignment === true) {
+      const assigned = profileFound.tasks.some(
+        (item: any) => item === task.task,
+      );
+      if (assigned)
+        throw new ConflictException('this task was already assigned');
+      await this.taskService.updateTask(task.task, { user: user });
+      await this.profileModel.updateProfile(user, task, assignment);
+    } else if (task && assignment === false) {
+      await this.taskService.updateTask(task.task, { user: user });
+      await this.profileModel.updateProfile(user, task, assignment);
     }
     await this.profileModel.updateProfile(user, data);
   }
