@@ -6,7 +6,7 @@ interface Client {
 }
 
 @Injectable()
-export class EventsService {
+export class ChatService {
   private clients: Record<string, Client> = {};
 
   onClientConnected(client: Client) {

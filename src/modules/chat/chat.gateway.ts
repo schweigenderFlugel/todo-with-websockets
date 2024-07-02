@@ -9,23 +9,23 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { EventsService } from './events.service';
-import { JwtGuard } from '../guards/jwt.guard';
-import { WebSocketExceptionFilter } from '../filters/ws.filter';
+import { ChatService } from './chat.service';
+import { JwtGuard } from '../../common/guards/jwt.guard';
+import { WebSocketExceptionFilter } from '../../common/filters/ws.filter';
 
 @UseFilters(WebSocketExceptionFilter)
 @WebSocketGateway()
-export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() public server: Server;
-  constructor(private readonly eventsService: EventsService) {}
+  constructor(private readonly chatService: ChatService) {}
 
   handleConnection(client: Socket) {
-    const connected = this.eventsService.onClientDisconnected(client.id);
+    const connected = this.chatService.onClientDisconnected(client.id);
     this.server.emit('on-clients-changed', connected);
   }
 
   handleDisconnect(client: Socket) {
-    const disconnected = this.eventsService.onClientDisconnected(client.id);
+    const disconnected = this.chatService.onClientDisconnected(client.id);
     this.server.emit('on-clients-changed', disconnected);
     client.disconnect();
   }
@@ -33,7 +33,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('signin')
   handleSignin(@ConnectedSocket() client: Socket) {
     const { username } = client.handshake.auth;
-    const connected = this.eventsService.onClientConnected({
+    const connected = this.chatService.onClientConnected({
       id: client.id,
       username: username,
     });
@@ -44,7 +44,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('signout')
   handleSignout(@ConnectedSocket() client: Socket) {
     const { username } = client.handshake.auth;
-    const disconnected = this.eventsService.onClientDisconnected(client.id);
+    const disconnected = this.chatService.onClientDisconnected(client.id);
     this.server.emit('on-clients-changed', disconnected);
     client.broadcast.emit('user-signed-out', `${username} has logged out`);
     client.disconnect();
@@ -53,7 +53,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('chat')
   @UseGuards(JwtGuard)
   handleChat(@MessageBody() payload: { username: string; message: string }) {
-    const connected = this.eventsService.getClients();
+    const connected = this.chatService.getClients();
     const target = connected.find(
       (connected) => connected.username === payload.username,
     );

@@ -11,7 +11,7 @@ import {
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { SignInDto, SignUpDto, ChangePasswordDto } from './dtos';
-import { EventsGateway } from 'src/common/websocket/events.gateway';
+import { EventsGateway } from 'src/modules/chat/events.gateway';
 import { UserRequest } from 'src/common/interfaces/auth.interface';
 import { JwtGuard, RefreshGuard } from 'src/common/guards';
 

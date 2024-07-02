@@ -4,7 +4,7 @@ import { UserModule } from './modules/user/user.module';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import config from './config';
 import { AuthModule } from './modules/auth/auth.module';
-import { EventsModule } from './common/websocket/events.module';
+import { EventsModule } from './modules/chat/chat.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ProfileModule } from './modules/profile/profile.module';
