@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { IClient, IMessage, IRoom } from './chat.interface';
+import { IClient, IMessage, IRoom, IRoomTask } from './room.interface';
+import { Task } from '../task/task.schema';
 
 @Injectable()
-export class ChatService {
+export class RoomService {
   private clients: Record<string, IClient> = {};
   private rooms: Record<string, IRoom> = {};
-  private chat: Record<number, IMessage> = {};
+  private roomTask: Record<string, IRoomTask> = {};
 
   onClientConnected(client: IClient) {
     this.clients[client.id] = client;
@@ -53,5 +54,9 @@ export class ChatService {
 
   getChatHistory(name: string): IMessage[] {
     return Object.values(this.rooms).find(room => room.name === name).chat;
+  }
+
+  onLoadTask(task: Task) {
+    return this.roomTask[task.title];
   }
 }

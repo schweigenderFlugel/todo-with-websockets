@@ -7,39 +7,47 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { ChatService } from './chat.service';
-import { JwtGuard } from '../../common/guards/jwt.guard';
+import { RoomService } from './room.service';
 import { WebSocketExceptionFilter } from '../../common/filters/ws.filter';
-import { IMessage, ServerToClientsEvents } from './chat.interface';
+import { IMessage, ServerToClientsEvents } from './room.interface';
+import { TaskService } from '../task/task.service';
+import { JwtGuard, RolesGuard } from 'src/common/guards';
+import { Roles } from 'src/common/decorators';
+import { Role } from 'src/common/enums/roles';
+import { ObjectId } from 'mongoose';
 
+@UseGuards(JwtGuard, RolesGuard)
 @UseFilters(WebSocketExceptionFilter)
 @WebSocketGateway({ namespace: 'chatEvents' })
-export class ChatGateway implements OnModuleInit {
+export class RoomGateway implements OnModuleInit {
   @WebSocketServer() public server: Server<ServerToClientsEvents>;
-  constructor(private readonly chatService: ChatService) {}
+  constructor(
+    private readonly roomService: RoomService,
+    private readonly taskService: TaskService,
+  ) {}
 
   onModuleInit() {
     this.server.on('connection', (client: Socket) => {
       const { username } = client.handshake.auth;
-      this.chatService.onClientConnected({ id: client.id, username: username });
+      this.roomService.onClientConnected({ id: client.id, username: username });
 
-      this.server.emit('userList', this.chatService.getClients());
-      this.server.emit('roomsList', this.chatService.getRooms()['name']);
+      this.server.emit('userList', this.roomService.getClients());
+      this.server.emit('roomList', this.roomService.getRooms()['name']);
 
       client.on('disconnect', () => {
-        this.chatService.onClientDisconnected(client.id);
-        this.server.emit('userList', this.chatService.getClients());
+        this.roomService.onClientDisconnected(client.id);
+        this.server.emit('userList', this.roomService.getClients());
 
         let isInRoom: boolean;
 
-        this.chatService.getRooms().forEach(room => 
+        this.roomService.getRooms().forEach(room => 
           room.users.forEach(user => {
             if (user.id === client.id) isInRoom === true;
           }
         ));
 
         if (isInRoom) {
-          this.chatService.onClientLeft(client.id);
+          this.roomService.onClientLeft(client.id);
           this.server.emit('enterRoom', username);
         }
       }) 
@@ -47,14 +55,13 @@ export class ChatGateway implements OnModuleInit {
   }
 
   @SubscribeMessage('activity')
-  @UseGuards(JwtGuard)
   handleActivity(
     @ConnectedSocket() client: Socket, 
     @MessageBody() payload: { username: string, room?: string }
   ) {
     const { username } = client.handshake.auth;
     if (!payload.room) {
-      const connected = this.chatService.getClients();
+      const connected = this.roomService.getClients();
       const target = connected.find(
         (connected) => connected.username === payload.username
       )
@@ -66,8 +73,7 @@ export class ChatGateway implements OnModuleInit {
   }
 
   @SubscribeMessage('sendMessage')
-  @UseGuards(JwtGuard)
-  handleMessage(
+  sendMessage(
     @ConnectedSocket() client: Socket, 
     @MessageBody() payload: { username: string, message: string, room?: string }
   ) {
@@ -82,51 +88,50 @@ export class ChatGateway implements OnModuleInit {
       }).format(new Date()),
     }
     if (!payload.room) {
-      const connected = this.chatService.getClients();
+      const connected = this.roomService.getClients();
       const target = connected.find(
         (connected) => connected.username === payload.username
       )
       if (target) this.server.to(target.id).emit('sendMessage', message)
     } else {
-      this.chatService.onChatHistory(payload.room, message);
-      const messages = this.chatService.getChatHistory(payload.room);
+      this.roomService.onChatHistory(payload.room, message);
+      const messages = this.roomService.getChatHistory(payload.room);
       this.server.to(payload.room).emit('roomChat', messages);
     }
   }
 
+  @Roles(Role.CREATOR, Role.ADMIN)
   @SubscribeMessage('createRoom')
-  @UseGuards(JwtGuard)
-  handleRoomCreate(
+  createRoom(
     @ConnectedSocket() client: Socket, 
     @MessageBody() room: string
   ) {
     const { username } = client.handshake.auth;
-    this.chatService.onRoomCreated({ admin: username, name: room })
-    const rooms = this.chatService.getRooms();
-    this.server.emit('createRoom', `${username} has removed the room ${room}`)
-    this.server.emit('roomsList', rooms['name']);
+    this.roomService.onRoomCreated({ admin: username, name: room })
+    const rooms = this.roomService.getRooms();
+    this.server.emit('createRoom', username);
+    this.server.emit('roomList', rooms['name']);
   }
 
+  @Roles(Role.CREATOR, Role.ADMIN)
   @SubscribeMessage('removeRoom')
-  @UseGuards(JwtGuard)
-  handleRoomRemove(
+  removeRoom(
     @ConnectedSocket() client: Socket,
     @MessageBody() room: string
   ) {
     const { username } = client.handshake.auth;
-    this.chatService.onRoomRemoved(room);
-    const rooms = this.chatService.getRooms();
-    this.server.emit('removeRoom', `${username} has removed the room ${room}`);
-    this.server.emit('roomsList', rooms['name']);
+    this.roomService.onRoomRemoved(room);
+    const rooms = this.roomService.getRooms();
+    this.server.emit('removeRoom', username);
+    this.server.emit('roomList', rooms['name']);
   }
 
   @SubscribeMessage('enterRoom')
-  @UseGuards(JwtGuard)
-  handleRoomJoin(
+  joinRoom(
     @ConnectedSocket() client: Socket, 
     @MessageBody() payload: { username: string, room: string }
   ) {
-    const connected = this.chatService.getClients();
+    const connected = this.roomService.getClients();
     const prevRoom = connected.find(
       connected => connected.id === client.id,
     ).room;
@@ -134,23 +139,46 @@ export class ChatGateway implements OnModuleInit {
       client.leave(prevRoom);
       this.server.to(prevRoom).emit('leaveRoom', payload.username);
     }
-    this.chatService.onClientJoined({ id: client.id, ...payload });
+    this.roomService.onClientJoined({ id: client.id, ...payload });
     this.server.to(payload.room).emit('enterRoom', payload.username);
-    const users = this.chatService.getClientsInRoom(payload.room);
+    const users = this.roomService.getClientsInRoom(payload.room);
     this.server.to(payload.room).emit('userList', users);
   }
 
   @SubscribeMessage('leaveRoom')
-  handleRoomLeave(
+  leaveRoom(
     @ConnectedSocket() client: Socket,
     @MessageBody() room: string,
   ) {
-    const connected = this.chatService.getClients()
+    const connected = this.roomService.getClients()
       .find(connected => connected.id === client.id);
     client.leave(room);
-    this.chatService.onClientLeft(client.id);
+    this.roomService.onClientLeft(client.id);
     this.server.to(room).emit('leaveRoom', connected.username);
-    const users = this.chatService.getClientsInRoom(room);
+    const users = this.roomService.getClientsInRoom(room);
     this.server.to(room).emit('userList', users);
+  }
+
+  @Roles(Role.CREATOR, Role.ADMIN)
+  @SubscribeMessage('loadTask')
+  async loadTask(@MessageBody() payload: { room: string, task: ObjectId }) {
+    const taskSelected = await this.taskService.selectTask(payload.task);
+    const task = this.roomService.onLoadTask(taskSelected);
+    this.server.to(payload.room).emit('loadTask', task);
+  }
+
+  @Roles(Role.CREATOR, Role.ADMIN)
+  @SubscribeMessage('startTask')
+  startTask(@MessageBody() payload: { room: string, trigger: boolean }) {
+    this.server.to(payload.room).emit('startTask', payload.trigger);
+  }
+
+  @SubscribeMessage('taskStatus')
+  handleItemStatus(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() item: string,
+  ) {
+    const { username } = client.handshake.auth;
+    this.server.emit('taskStatus', `Task has begun`);
   }
 }

@@ -55,7 +55,7 @@ export class JwtGuard implements CanActivate {
         const token = this.extractTokenFromClientHeader(client);
         const payload = await this.verifyJwt(token);
         const data = context.switchToWs().getData();
-        data.user = payload;
+        data['user'] = payload;
       }
     } catch (error) {
       if (error instanceof JsonWebTokenError) {

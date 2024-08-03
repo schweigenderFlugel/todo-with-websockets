@@ -2,7 +2,7 @@ import { ObjectId } from 'mongoose';
 import { Item } from './item.schema';
 
 export interface IItem {
-  title: string;
+  instruction: string;
   description: string;
   requirements: string[];
   details: string;

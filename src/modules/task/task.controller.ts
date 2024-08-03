@@ -25,8 +25,9 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Get()
-  async getAllTasks(): Promise<Task[]> {
-    return await this.taskService.getAllTasks();
+  async getAllTasks(@Req() req: UserRequest): Promise<Task[]> {
+    const creator = req.user.id;
+    return await this.taskService.getAllTasks(creator);
   }
 
   @Get(':id')
@@ -36,8 +37,9 @@ export class TaskController {
 
   @Roles(Role.ADMIN)
   @Post()
-  async createTask(@Body() data: CreateTaskDto): Promise<void> {
-    return await this.taskService.createTask(data);
+  async createTask(@Req() req: UserRequest, @Body() data: CreateTaskDto): Promise<void> {
+    const creator = req.user.id;
+    return await this.taskService.createTask(creator, data);
   }
 
   @Roles(Role.ADMIN)

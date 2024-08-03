@@ -1,7 +1,13 @@
+import { IItem } from "../item/item.interface";
+import { ITask } from "../task/task.interface";
+import { Task } from "../task/task.schema";
+import { TaskStatus } from "./room.enum";
+
 export interface IClient {
   id: string;
   username: string;
   room?: string | null;
+  items?: TaskItems[];
 }
 
 export interface IRoom {
@@ -17,9 +23,17 @@ export interface IMessage {
   time: string;
 }
 
+export interface TaskItems extends IItem {
+  status: TaskStatus,
+}
+
+export interface IRoomTask extends Omit<Omit<Omit<ITask, 'creator'>, 'updatedAt'>, 'items'> {
+  items: TaskItems
+}
+
 export interface ServerToClientsEvents {
   userList: (list: IClient[]) => void;
-  roomsList: (list: Array<IRoom['name']>) => void;
+  roomList: (list: Array<IRoom['name']>) => void;
   activity: (message: string) => void;
   sendMessage: (message: IMessage) => void;
   createRoom: (message: string) => void;
@@ -27,4 +41,7 @@ export interface ServerToClientsEvents {
   enterRoom: (username: IClient['username']) => void;
   leaveRoom: (username: IClient['username']) => void;
   roomChat: (chat: IMessage[]) => void;
+  loadTask: (task: IRoomTask) => void;
+  startTask: (trigger: boolean) => void;
+  taskStatus: (message: string) => void;
 }

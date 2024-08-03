@@ -9,25 +9,21 @@ import { Task } from './task.schema';
 export class TaskService {
   constructor(@Inject(TaskModel) private readonly taskModel: ITaskModel) {}
 
-  async getAllTasks(): Promise<Task[]> {
-    return await this.taskModel.getAllTasks();
+  async getAllTasks(creator: ObjectId): Promise<Task[]> {
+    return await this.taskModel.getAllTasks(creator);
   }
 
   async selectTask(id: ObjectId): Promise<Task> {
     return await this.taskModel.selectTask(id);
   }
 
-  async createTask(data: CreateTaskDto): Promise<void> {
-    return await this.taskModel.createTask(data);
+  async createTask(creator: ObjectId, data: CreateTaskDto): Promise<void> {
+    return await this.taskModel.createTask({ creator, ...data });
   }
 
-  async updateTask(
-    id: ObjectId,
-    data: Partial<ITask>,
-    assignment?: boolean,
-  ): Promise<void> {
+  async updateTask(id: ObjectId, data: Partial<ITask>): Promise<void> {
     data.updatedAt = new Date();
-    return await this.taskModel.updateTask(id, data, assignment);
+    return await this.taskModel.updateTask(id, data);
   }
 
   async deleteTask(id: ObjectId): Promise<void> {
