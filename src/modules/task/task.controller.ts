@@ -24,12 +24,14 @@ import { Role } from 'src/common/enums/roles';
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
+  @Roles(Role.ADMIN)
   @Get()
   async getAllTasks(@Req() req: UserRequest): Promise<Task[]> {
     const creator = req.user.id;
     return await this.taskService.getAllTasks(creator);
   }
 
+  @Roles(Role.ADMIN)
   @Get(':id')
   async selectTask(@Param('id', ObjectIdPipe) id: ObjectId): Promise<Task> {
     return await this.taskService.selectTask(id);

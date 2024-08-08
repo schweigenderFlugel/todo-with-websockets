@@ -11,16 +11,12 @@ import {
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { SignInDto, SignUpDto, ChangePasswordDto } from './dtos';
-import { EventsGateway } from 'src/modules/chat/events.gateway';
 import { UserRequest } from 'src/common/interfaces/auth.interface';
 import { JwtGuard, RefreshGuard } from 'src/common/guards';
 
 @Controller()
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly eventsGateway: EventsGateway,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
   async signup(@Body() user: SignUpDto): Promise<void> {
@@ -38,7 +34,6 @@ export class AuthController {
       res,
       auth,
     );
-    this.eventsGateway.server.emit('signin', { username });
     return { accessToken };
   }
 
@@ -54,7 +49,6 @@ export class AuthController {
       req,
       res,
     );
-    this.eventsGateway.server.emit('signin', { username });
     return { accessToken };
   }
 

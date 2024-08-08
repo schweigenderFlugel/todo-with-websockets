@@ -11,6 +11,8 @@ import { ProfileModule } from './modules/profile/profile.module';
 import { HistorialModule } from './modules/historial/historial.module';
 import { TaskModule } from './modules/task/task.module';
 import { ItemModule } from './modules/item/item.module';
+import { ApiKeyGuard } from './common/guards';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -37,7 +39,12 @@ import { ItemModule } from './modules/item/item.module';
       rootPath: join(__dirname, '../..', 'public'),
     }),
   ],
-  controllers: [],
-  providers: [],
+  controllers: [AppController],
+  providers: [
+    {
+      provide: 'APP_GUARD',
+      useClass: ApiKeyGuard,
+    }
+  ],
 })
 export class AppModule {}

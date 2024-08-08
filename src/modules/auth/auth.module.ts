@@ -4,14 +4,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UserModule } from 'src/modules/user/user.module';
-import { EventsModule } from 'src/modules/chat/events.module';
 import { AuthModel } from './auth.model';
 import { Auth, AuthSchema } from './auth.schema';
 
 @Module({
   imports: [
     UserModule,
-    EventsModule,
     MongooseModule.forFeature([
       {
         name: Auth.name,

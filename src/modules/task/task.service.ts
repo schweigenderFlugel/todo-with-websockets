@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { ObjectId } from 'mongoose';
 import { TaskModel } from './task.model';
 import { CreateTaskDto } from './task.dto';
@@ -10,7 +10,9 @@ export class TaskService {
   constructor(@Inject(TaskModel) private readonly taskModel: ITaskModel) {}
 
   async getAllTasks(creator: ObjectId): Promise<Task[]> {
-    return await this.taskModel.getAllTasks(creator);
+    const tasksFound = this.taskModel.getAllTasks(creator);
+    if (!tasksFound) throw new NotFoundException('no tasks available')
+    return tasksFound;
   }
 
   async selectTask(id: ObjectId): Promise<Task> {
