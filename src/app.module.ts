@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigType } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './modules/user/user.module';
-import { ConfigModule, ConfigType } from '@nestjs/config';
+
 import config from './config';
 import { AuthModule } from './modules/auth/auth.module';
 import { EventsModule } from './modules/room/room.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
 import { ProfileModule } from './modules/profile/profile.module';
 import { HistorialModule } from './modules/historial/historial.module';
 import { TaskModule } from './modules/task/task.module';
@@ -34,9 +33,6 @@ import { AppController } from './app.controller';
           uri: configService.mongodbUri,
         };
       },
-    }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../..', 'public'),
     }),
   ],
   controllers: [AppController],

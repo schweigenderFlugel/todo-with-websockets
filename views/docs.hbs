@@ -1,0 +1,26 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>{{title}}</h1>
+  <ul>
+    {{#each apiDocumentation}}
+    <li>
+      <strong>
+        {{method}}
+          <code>{{route}}</code>
+        </strong><br>
+      </li>
+    {{/each}}
+    {{#each schemas}}
+        <p>{{modelName}}</p>
+        <div>
+            {{schema}}
+        </div>
+    {{/each}}
+  </ul>
+</body>
+</html>

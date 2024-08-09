@@ -3,7 +3,6 @@ import { registerAs } from '@nestjs/config';
 export default registerAs('config', () => {
   return {
     nodeEnv: process.env.NODE_ENV,
-
     apiKey: process.env.API_KEY,
 
     mongodbUri: process.env.MONGODB_URI,

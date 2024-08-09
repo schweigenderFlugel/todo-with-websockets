@@ -1,4 +1,11 @@
-import { Injectable, Inject, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { 
+  Injectable,
+  Inject,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+  Redirect,
+} from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { Request } from 'express';
 import { Reflector } from '@nestjs/core';
@@ -23,9 +30,12 @@ export class ApiKeyGuard implements CanActivate {
     const authHeader = request.header('X-WsApi-Key');
     const apiKey = this.configService.nodeEnv === 'prod'
       ? this.configService.apiKey
-      : 'websockets'
+      : 'websockets';
     const isAuth = authHeader === apiKey;
-    if (!isAuth) throw new UnauthorizedException('not allowed to access')
+    if (!isAuth) {
+      Redirect('about');
+      throw new UnauthorizedException('not allowed to access')
+    }
     return true;
   }
 }
