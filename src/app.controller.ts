@@ -3,11 +3,12 @@ import { HttpAdapterHost } from "@nestjs/core";
 import { InjectConnection } from "@nestjs/mongoose";
 import { Connection } from "mongoose";
 import { Public } from "./common/decorators";
+import { AppService } from "./app.service";
 
 @Controller()
 export class AppController {
   constructor(
-    @Inject(HttpAdapterHost) private readonly adapterHost: HttpAdapterHost,
+    private readonly appService: AppService,
     @InjectConnection() private readonly connection: Connection,
   ) {}
 
@@ -24,19 +25,14 @@ export class AppController {
   @Get('docs')
   @Render('docs')
   renderDocs() {
-    const server = this.adapterHost.httpAdapter.getInstance();
-    const schemas = [];
-    this.connection.modelNames().forEach(modelName => {
-      const model = this.connection.model(modelName);
-      const schema = model.schema.obj;
-      schemas.push({ modelName, schema });
-    });
-    const routes = server._router.stack
-      .filter((r: any) => r.route)
-      .map((r: any) => ({
-        method: Object.keys(r.route.methods)[0].toUpperCase(),
-        route: r.route.path,
-      }))
-    return { apiDocumentation: routes, title: 'Documentación', schemas };
+    // const schemas = [];
+    // this.connection.modelNames().forEach(modelName => {
+    //   const model = this.connection.model(modelName);
+    //   const schema = model.schema.obj;
+    //   schemas.push({ modelName, schema });
+    // });
+    const routes = this.appService.getAllRoutes();
+    const dtos = this.appService.getAllDtoMetadata();
+    return { routes, dtos, title: 'Documentación' };
   }
 }

@@ -12,6 +12,8 @@ import { TaskModule } from './modules/task/task.module';
 import { ItemModule } from './modules/item/item.module';
 import { ApiKeyGuard } from './common/guards';
 import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { MetadataScanner } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { AppController } from './app.controller';
   ],
   controllers: [AppController],
   providers: [
+    AppService,
+    MetadataScanner,
     {
       provide: 'APP_GUARD',
       useClass: ApiKeyGuard,

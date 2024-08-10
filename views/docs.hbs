@@ -7,18 +7,18 @@
 <body>
   <h1>{{title}}</h1>
   <ul>
-    {{#each apiDocumentation}}
+    {{#each routes}}
     <li>
       <strong>
         {{method}}
-          <code>{{route}}</code>
+          <code>{{path}}</code>
         </strong><br>
       </li>
     {{/each}}
-    {{#each schemas}}
-        <p>{{modelName}}</p>
+    {{#each dtos}}
+        <p>{{name}}</p>
         <div>
-            {{schema}}
+            {{properties}}
         </div>
     {{/each}}
   </ul>
