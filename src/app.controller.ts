@@ -24,7 +24,7 @@ export class AppController {
   @Public()
   @Get('docs')
   @Render('docs')
-  renderDocs() {
+  renderDoc() {
     // const schemas = [];
     // this.connection.modelNames().forEach(modelName => {
     //   const model = this.connection.model(modelName);

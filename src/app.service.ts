@@ -2,7 +2,7 @@ import { Injectable, Type } from "@nestjs/common";
 import { HttpAdapterHost, MetadataScanner, ModulesContainer } from "@nestjs/core";
 import { plainToClass } from "class-transformer";
 import { validateSync } from "class-validator";
-import { IDtoMetadata, IRoutes } from "./app.interface";
+import { IDtoMetadata, IDtoMetadataResponse, IDtoProperties, IRoutes } from "./app.interface";
 
 @Injectable()
 export class AppService {
@@ -13,16 +13,17 @@ export class AppService {
   ) {}
 
   private getDtoProperties(dto: Type<IDtoMetadata>): IDtoMetadata['properties'] {
+    let properties: IDtoProperties[] = []
     const instance = plainToClass(dto, {});
     const errors = validateSync(instance);
-    console.log(instance);
-    return Object.keys(instance).map(key => ({
-      property: key,
-      validators: errors
-        .filter(error => error.property === key)
-        .map(error => error.constraints)
-        .flatMap(contraints => Object.keys(contraints))
-    }));
+    errors.filter(error => error.target === instance)
+      .forEach(error => {
+        properties.push({ 
+          property: error.property, 
+          validators: Object.keys(error.constraints)
+        })
+      })
+    return properties;
   }
 
   getAllRoutes(): Array<IRoutes> {
@@ -36,8 +37,9 @@ export class AppService {
     return routes;
   }
 
-  getAllDtoMetadata(): IDtoMetadata[] {
+  getAllDtoMetadata() {
     const modules = [...this.modulesContainer.values()];
+    let response: IDtoMetadataResponse[] = [];
     const dtos = new Set<Type<IDtoMetadata>>();
 
     modules.forEach(({ controllers }) => {
@@ -46,23 +48,30 @@ export class AppService {
       controllers.forEach(({ instance }) => {
         if (!instance) return;
 
-        const prototype = Object.getPrototypeOf(instance);
-        if (prototype.constructor.name.endsWith('Controller')) {
-          const methods = this.metadataScanner.getAllMethodNames(prototype);
-          methods.forEach(key => {
+        const prototype: object = Object.getPrototypeOf(instance);
+        const methods = this.metadataScanner.getAllMethodNames(prototype);
+        methods
+          .filter(method => method !== 'about' && method !== 'renderDoc')
+          .forEach(key => {
             const types: Type<IDtoMetadata>[] = Reflect.getMetadata('design:paramtypes', prototype, key);
             if (types) {
               types.forEach(type => {
-                if (type && type.name.endsWith('Dto')) dtos.add(type);
+                if (type && type.name.endsWith('Dto')) {
+                  response.push({method: key, dto: type})
+                  dtos.add(type);
+                }
               })
             }
           })
         }
-      });
+      );
     });
-    return Array.from(dtos).map(dto => ({
-      name: dto.name,
-      properties: this.getDtoProperties(dto),
+    return response.map(item => ({
+      method: item.method,
+      dto: {
+        name: item.dto.name,
+        properties: this.getDtoProperties(item.dto),
+      },
     }));
   }
 }
