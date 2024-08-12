@@ -1,9 +1,5 @@
 body {
   background-color: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
 }
 
 section {
@@ -19,6 +15,68 @@ section h1 {
   font-weight: bold;
 }
 
-section p {
-  font-size: 12px;
+.list {
+  list-style-type: none;
+  font-size: 16px;
+}
+
+.path {
+  background-color: rgba(0, 0, 0, 0.5); 
+  text-align: left;
+  padding-top: 10px;
+  padding-bottom: 10px;  
+  padding-left: 20px; 
+  border-radius: 20px;
+  color: white; 
+}
+
+.description {
+  background-color: rgb(24, 2, 44);
+  border-radius: 20px;
+  width: 800px;
+  padding: 30px;
+  margin-bottom: 40px;
+}
+
+.description h2 {
+  text-align: left;
+}
+
+.schema {
+  width: 600px;
+  background-color: rgba(0, 0, 0, 0.5); 
+  border-radius: 20px;
+  text-align: left;
+  padding-top: 30px;
+  padding-bottom: 10px;
+  margin-bottom: 40px;
+}
+
+.model {
+  width: 600px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+  text-align: left;
+  padding-top: 30px;
+  padding-bottom: 10px;
+  margin-bottom: 40px;
+}
+
+.code {
+  font-size: 14px;
+  line-height: 5px;
+}
+
+.property {
+  color: rgb(99, 199, 233);
+  display: inline;
+}
+
+.validators {
+  color: rgb(197, 86, 42);
+  text-indent: 20px;
+}
+
+.schema li {
+  list-style-type: none;
 }

@@ -1,16 +1,10 @@
-import { Controller, Get, Render, Inject } from "@nestjs/common";
-import { HttpAdapterHost } from "@nestjs/core";
-import { InjectConnection } from "@nestjs/mongoose";
-import { Connection } from "mongoose";
+import { Controller, Get, Render } from "@nestjs/common";
 import { Public } from "./common/decorators";
 import { AppService } from "./app.service";
 
 @Controller()
 export class AppController {
-  constructor(
-    private readonly appService: AppService,
-    @InjectConnection() private readonly connection: Connection,
-  ) {}
+  constructor(private readonly appService: AppService) {}
 
   @Public()
   @Get('about')
@@ -25,14 +19,7 @@ export class AppController {
   @Get('docs')
   @Render('docs')
   renderDoc() {
-    // const schemas = [];
-    // this.connection.modelNames().forEach(modelName => {
-    //   const model = this.connection.model(modelName);
-    //   const schema = model.schema.obj;
-    //   schemas.push({ modelName, schema });
-    // });
     const routes = this.appService.getAllRoutes();
-    const dtos = this.appService.getAllDtoMetadata();
-    return { routes, dtos, title: 'Documentación' };
+    return { routes, title: 'Documentación' };
   }
 }

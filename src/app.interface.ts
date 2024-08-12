@@ -13,9 +13,10 @@ export interface IDtoMetadata {
 export interface IRoutes {
   method: string;
   path: string;
+  dto: IDtoMetadata | null;
 }
 
 export interface IDtoMetadataResponse {
-  method: string;
+  path: string;
   dto: Type<IDtoMetadata>;
 }

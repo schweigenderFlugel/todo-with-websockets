@@ -1,26 +1,45 @@
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <h1>{{title}}</h1>
-  <ul>
-    {{#each routes}}
-    <li>
-      <strong>
-        {{method}}
-          <code>{{path}}</code>
-        </strong><br>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <main>
+    <h1>{{title}}</h1>
+    <ul>
+      {{#each routes}}
+      <li class="list">
+        <section class="description">
+          <div class="path">
+            <strong>{{method}}</strong>
+            <code>{{path}}</code>
+          </div>
+          {{#if dto}}
+          <h2 style="color: white;">Schema</h2>
+          <div class="schema">
+            <ul class="code">
+              {{#each dto.properties}}
+              <code>
+                <p class="property">{{property}}: <span style="color: rgb(197, 86, 42);">[</span></p>
+                {{#each validators}}
+                  <p class="validators">"{{this}}", </p>
+                {{/each}}
+                <p style="color: rgb(197, 86, 42); margin-bottom: 20px;">]</p>
+              </code>
+              {{/each}}
+            </ul>
+          </div>
+          {{/if}}
+          <h2 style="color: white;">Response</h2>
+          <div class="model">
+            <ul>
+              <code>Modelo</code>
+            </ul>
+          </div>
+        </section>
       </li>
-    {{/each}}
-    {{#each dtos}}
-        <p>{{name}}</p>
-        <div>
-            {{properties}}
-        </div>
-    {{/each}}
-  </ul>
-</body>
+      {{/each}}
+    </ul>
+  </main>
 </html>
