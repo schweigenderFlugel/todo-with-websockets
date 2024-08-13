@@ -10,10 +10,10 @@ import { IDtoMetadata, IDtoMetadataResponse, IDtoProperties, IRoutes } from "./a
 @Injectable()
 export class AppService {
   constructor(
+    @InjectConnection() private readonly connection: Connection,
     private readonly modulesContainer: ModulesContainer,
     private readonly metadataScanner: MetadataScanner,
     private readonly adapterHost: HttpAdapterHost,
-    @InjectConnection() private readonly connection: Connection,
     private readonly reflector: Reflector,
   ) {}
 
@@ -74,17 +74,19 @@ export class AppService {
     }));
   }
 
-  private getModelSchema() {
+  private getModels() {
     const schemas = [];
     this.connection.modelNames().forEach(modelName => {
       const model = this.connection.model(modelName);
       const schema = model.schema.obj;
       schemas.push({ modelName, schema });
     });
+    return schemas;
   }
 
   getAllRoutes(): Array<IRoutes> {
     const validationSchemas = this.getAllDtoMetadata();
+    const models = this.getModels();
     const server = this.adapterHost.httpAdapter.getInstance();
     const routes = server._router.stack
       .filter((r: any) => r.route)
@@ -99,6 +101,15 @@ export class AppService {
             } 
           : null
       }))
+    models.forEach(model => {
+      const object = {
+        [model.modelName]: {}
+      }
+      for (const key in model.schema) {
+        object[model.modelName][key] = model.schema[key]['type'].name 
+        console.log(object)
+      }
+    })
     return routes;
   }
 }
