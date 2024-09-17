@@ -3,7 +3,6 @@ body {
 }
 
 section {
-  text-align: center;
   border-radius: 2px;
   border-color: blueviolet;
   padding: 12px;
@@ -15,27 +14,51 @@ section h1 {
   font-weight: bold;
 }
 
-.list {
-  list-style-type: none;
-  font-size: 16px;
-}
-
-.path {
-  background-color: rgba(0, 0, 0, 0.5); 
-  text-align: left;
-  padding-top: 10px;
-  padding-bottom: 10px;  
-  padding-left: 20px; 
-  border-radius: 20px;
-  color: white; 
-}
-
 .description {
   background-color: rgb(24, 2, 44);
   border-radius: 20px;
   width: 800px;
   padding: 30px;
   margin-bottom: 40px;
+}
+
+.list {
+  list-style-type: none;
+  font-size: 16px;
+}
+
+.path {
+  display: inline-flex;
+  border-radius: 20px;
+  color: white; 
+}
+
+.path h3 {
+  margin-right: 20px;
+}
+
+.path div {
+  background-color: rgba(0, 0, 0, 0.5); 
+  border-radius: 20px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  max-width: 500px;
+}
+
+.path strong {
+  margin-right: 10px;
+}
+
+.summary {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-decoration: underline;
 }
 
 .description h2 {

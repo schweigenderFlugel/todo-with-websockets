@@ -35,17 +35,22 @@ export class RoomService {
 
   onClientJoined(client: IClient) {
     this.clients[client.id].room = client.room;
-    this.rooms[client.room].users.push({ id: client.id, username: client.username })
+    this.rooms[client.room].users.push({
+      id: client.id,
+      username: client.username,
+    });
   }
 
   onClientLeft(id: string) {
     this.clients[id].room = null;
-    Object.values(this.rooms).forEach(room => room.users.filter(user => user.id !== id));
+    Object.values(this.rooms).forEach((room) =>
+      room.users.filter((user) => user.id !== id),
+    );
   }
 
   getClientsInRoom(name: string): IClient[] {
     const rooms = Object.values(this.rooms);
-    return rooms.find(room => room.name === name).users;
+    return rooms.find((room) => room.name === name).users;
   }
 
   onChatHistory(room: string, message: IMessage) {
@@ -53,7 +58,7 @@ export class RoomService {
   }
 
   getChatHistory(name: string): IMessage[] {
-    return Object.values(this.rooms).find(room => room.name === name).chat;
+    return Object.values(this.rooms).find((room) => room.name === name).chat;
   }
 
   onLoadTask(task: Task) {

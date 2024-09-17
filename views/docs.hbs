@@ -12,8 +12,22 @@
       <li class="list">
         <section class="description">
           <div class="path">
-            <strong>{{method}}</strong>
-            <code>{{path}}</code>
+            <h3 style="color: white;">{{name}}</h3>
+            <h3 style="color: white;">Path</h3>
+            <div>
+              <strong style="
+                {{#if (eq method "GET") }} color: blue; 
+                {{else if (eq method "POST")}} color: green;
+                {{else if (eq method "PUT")}} color: orange;
+                {{else if (eq method "DELETE")}} color: red;
+                {{/if}}
+              ">{{method}}</strong>
+              <code>{{path}}</code>
+            </div>
+          </div>
+          <div>
+            <h4 style="color: white; margin-right: 10px; text-decoration: underline;">Description:</h4>
+            <p style="color: white;">{{description}}</p>
           </div>
           {{#if dto}}
           <h2 style="color: white;">Schema</h2>
@@ -31,12 +45,14 @@
             </ul>
           </div>
           {{/if}}
+          {{#if response}}
           <h2 style="color: white;">Response</h2>
           <div class="model">
             <ul>
-              <code>Modelo</code>
+              <code>{{response}}</code>
             </ul>
           </div>
+          {{/if}}
         </section>
       </li>
       {{/each}}

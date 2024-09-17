@@ -11,7 +11,8 @@ export class TaskModel implements ITaskModel {
   constructor(@InjectModel(Task.name) private readonly model: Model<Task>) {}
 
   async getAllTasks(creator: ObjectId): Promise<Task[]> {
-    return await this.model.find({ creator: creator })
+    return await this.model
+      .find({ creator: creator })
       .populate({ path: 'creator', model: User.name, select: 'username' })
       .exec();
   }

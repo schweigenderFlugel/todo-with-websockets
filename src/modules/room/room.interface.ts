@@ -1,7 +1,7 @@
-import { IItem } from "../item/item.interface";
-import { ITask } from "../task/task.interface";
-import { Task } from "../task/task.schema";
-import { TaskStatus } from "./room.enum";
+import { IItem } from '../item/item.interface';
+import { ITask } from '../task/task.interface';
+import { Task } from '../task/task.schema';
+import { TaskStatus } from './room.enum';
 
 export interface IClient {
   id: string;
@@ -24,11 +24,12 @@ export interface IMessage {
 }
 
 export interface TaskItems extends IItem {
-  status: TaskStatus,
+  status: TaskStatus;
 }
 
-export interface IRoomTask extends Omit<Omit<Omit<ITask, 'creator'>, 'updatedAt'>, 'items'> {
-  items: TaskItems
+export interface IRoomTask
+  extends Omit<Omit<Omit<ITask, 'creator'>, 'updatedAt'>, 'items'> {
+  items: TaskItems;
 }
 
 export interface ServerToClientsEvents {

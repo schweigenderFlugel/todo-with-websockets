@@ -44,6 +44,7 @@ export class JwtGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const contextType = context.getType();
+
     try {
       if (contextType === 'http') {
         const request = context.switchToHttp().getRequest<Request>();

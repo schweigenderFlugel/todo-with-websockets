@@ -1,4 +1,4 @@
-import { Type } from "@nestjs/common";
+import { Type } from '@nestjs/common';
 
 export interface IDtoProperties {
   property: string;
@@ -7,16 +7,20 @@ export interface IDtoProperties {
 
 export interface IDtoMetadata {
   name: string;
-  properties: IDtoProperties[]
+  properties: IDtoProperties[];
 }
 
-export interface IRoutes {
+export interface IRoute {
+  name: string;
   method: string;
   path: string;
+  summary: string;
   dto: IDtoMetadata | null;
 }
 
-export interface IDtoMetadataResponse {
+export interface IMetadataResponse {
+  name: string;
   path: string;
+  summary: string;
   dto: Type<IDtoMetadata>;
 }

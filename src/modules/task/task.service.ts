@@ -11,7 +11,7 @@ export class TaskService {
 
   async getAllTasks(creator: ObjectId): Promise<Task[]> {
     const tasksFound = this.taskModel.getAllTasks(creator);
-    if (!tasksFound) throw new NotFoundException('no tasks available')
+    if (!tasksFound) throw new NotFoundException('no tasks available');
     return tasksFound;
   }
 

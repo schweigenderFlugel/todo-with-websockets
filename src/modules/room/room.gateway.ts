@@ -40,42 +40,43 @@ export class RoomGateway implements OnModuleInit {
 
         let isInRoom: boolean;
 
-        this.roomService.getRooms().forEach(room => 
-          room.users.forEach(user => {
+        this.roomService.getRooms().forEach((room) =>
+          room.users.forEach((user) => {
             if (user.id === client.id) isInRoom === true;
-          }
-        ));
+          }),
+        );
 
         if (isInRoom) {
           this.roomService.onClientLeft(client.id);
           this.server.emit('enterRoom', username);
         }
-      }) 
-    })
+      });
+    });
   }
 
   @SubscribeMessage('activity')
   handleActivity(
-    @ConnectedSocket() client: Socket, 
-    @MessageBody() payload: { username: string, room?: string }
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { username: string; room?: string },
   ) {
     const { username } = client.handshake.auth;
     if (!payload.room) {
       const connected = this.roomService.getClients();
       const target = connected.find(
-        (connected) => connected.username === payload.username
-      )
-      if (target) this.server.to(target.id).emit('activity', `${username} is typing...`)
-    }
-    else {
-      this.server.to(payload.room).emit('activity', `${username} is typing...`)
+        (connected) => connected.username === payload.username,
+      );
+      if (target)
+        this.server.to(target.id).emit('activity', `${username} is typing...`);
+    } else {
+      this.server.to(payload.room).emit('activity', `${username} is typing...`);
     }
   }
 
   @SubscribeMessage('sendMessage')
   sendMessage(
-    @ConnectedSocket() client: Socket, 
-    @MessageBody() payload: { username: string, message: string, room?: string }
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    payload: { username: string; message: string; room?: string },
   ) {
     const { username } = client.handshake.auth;
     const message: IMessage = {
@@ -86,13 +87,13 @@ export class RoomGateway implements OnModuleInit {
         minute: 'numeric',
         second: 'numeric',
       }).format(new Date()),
-    }
+    };
     if (!payload.room) {
       const connected = this.roomService.getClients();
       const target = connected.find(
-        (connected) => connected.username === payload.username
-      )
-      if (target) this.server.to(target.id).emit('sendMessage', message)
+        (connected) => connected.username === payload.username,
+      );
+      if (target) this.server.to(target.id).emit('sendMessage', message);
     } else {
       this.roomService.onChatHistory(payload.room, message);
       const messages = this.roomService.getChatHistory(payload.room);
@@ -102,12 +103,9 @@ export class RoomGateway implements OnModuleInit {
 
   @Roles(Role.CREATOR, Role.ADMIN)
   @SubscribeMessage('createRoom')
-  createRoom(
-    @ConnectedSocket() client: Socket, 
-    @MessageBody() room: string
-  ) {
+  createRoom(@ConnectedSocket() client: Socket, @MessageBody() room: string) {
     const { username } = client.handshake.auth;
-    this.roomService.onRoomCreated({ admin: username, name: room })
+    this.roomService.onRoomCreated({ admin: username, name: room });
     const rooms = this.roomService.getRooms();
     this.server.emit('createRoom', username);
     this.server.emit('roomList', rooms['name']);
@@ -115,10 +113,7 @@ export class RoomGateway implements OnModuleInit {
 
   @Roles(Role.CREATOR, Role.ADMIN)
   @SubscribeMessage('removeRoom')
-  removeRoom(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() room: string
-  ) {
+  removeRoom(@ConnectedSocket() client: Socket, @MessageBody() room: string) {
     const { username } = client.handshake.auth;
     this.roomService.onRoomRemoved(room);
     const rooms = this.roomService.getRooms();
@@ -128,12 +123,12 @@ export class RoomGateway implements OnModuleInit {
 
   @SubscribeMessage('enterRoom')
   joinRoom(
-    @ConnectedSocket() client: Socket, 
-    @MessageBody() payload: { username: string, room: string }
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { username: string; room: string },
   ) {
     const connected = this.roomService.getClients();
     const prevRoom = connected.find(
-      connected => connected.id === client.id,
+      (connected) => connected.id === client.id,
     ).room;
     if (prevRoom) {
       client.leave(prevRoom);
@@ -146,12 +141,10 @@ export class RoomGateway implements OnModuleInit {
   }
 
   @SubscribeMessage('leaveRoom')
-  leaveRoom(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() room: string,
-  ) {
-    const connected = this.roomService.getClients()
-      .find(connected => connected.id === client.id);
+  leaveRoom(@ConnectedSocket() client: Socket, @MessageBody() room: string) {
+    const connected = this.roomService
+      .getClients()
+      .find((connected) => connected.id === client.id);
     client.leave(room);
     this.roomService.onClientLeft(client.id);
     this.server.to(room).emit('leaveRoom', connected.username);
@@ -161,7 +154,7 @@ export class RoomGateway implements OnModuleInit {
 
   @Roles(Role.CREATOR, Role.ADMIN)
   @SubscribeMessage('loadTask')
-  async loadTask(@MessageBody() payload: { room: string, task: ObjectId }) {
+  async loadTask(@MessageBody() payload: { room: string; task: ObjectId }) {
     const taskSelected = await this.taskService.selectTask(payload.task);
     const task = this.roomService.onLoadTask(taskSelected);
     this.server.to(payload.room).emit('loadTask', task);
@@ -169,7 +162,7 @@ export class RoomGateway implements OnModuleInit {
 
   @Roles(Role.CREATOR, Role.ADMIN)
   @SubscribeMessage('startTask')
-  startTask(@MessageBody() payload: { room: string, trigger: boolean }) {
+  startTask(@MessageBody() payload: { room: string; trigger: boolean }) {
     this.server.to(payload.room).emit('startTask', payload.trigger);
   }
 

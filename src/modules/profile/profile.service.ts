@@ -44,7 +44,10 @@ export class ProfileService {
     });
   }
 
-  async updateProfile(user: IProfile['user'], data?: UpdateProfileDto): Promise<void> {
+  async updateProfile(
+    user: IProfile['user'],
+    data?: UpdateProfileDto,
+  ): Promise<void> {
     const isValid = isValidObjectId(user);
     if (!isValid) throw new NotAcceptableException('id invalid!');
     const profileFound = await this.profileModel.getProfile(user);

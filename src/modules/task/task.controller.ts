@@ -39,7 +39,10 @@ export class TaskController {
 
   @Roles(Role.ADMIN)
   @Post()
-  async createTask(@Req() req: UserRequest, @Body() data: CreateTaskDto): Promise<void> {
+  async createTask(
+    @Req() req: UserRequest,
+    @Body() data: CreateTaskDto,
+  ): Promise<void> {
     const creator = req.user.id;
     return await this.taskService.createTask(creator, data);
   }

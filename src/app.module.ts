@@ -44,7 +44,7 @@ import { MetadataScanner } from '@nestjs/core';
     {
       provide: 'APP_GUARD',
       useClass: ApiKeyGuard,
-    }
+    },
   ],
 })
 export class AppModule {}

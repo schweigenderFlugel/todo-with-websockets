@@ -15,8 +15,7 @@ import { ChallengeType } from './challenge-type.enum';
 import { PartialType } from '@nestjs/mapped-types';
 
 enum ErrorMessages {
-  CHALLENGE_TYPE_INVALID_ERROR = 
-  `challengeType must be ${ChallengeType.INDIVIDUAL}, ${ChallengeType.LONGTERM}, or ${ChallengeType.FLASH}`,
+  CHALLENGE_TYPE_INVALID_ERROR = `challengeType must be ${ChallengeType.INDIVIDUAL}, ${ChallengeType.LONGTERM}, or ${ChallengeType.FLASH}`,
 }
 
 export class CreateTaskDto {
