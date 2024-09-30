@@ -1,7 +1,6 @@
 import { IItem } from '../item/item.interface';
 import { ITask } from '../task/task.interface';
-import { Task } from '../task/task.schema';
-import { TaskStatus } from './room.enum';
+import { TaskStatus } from './todo-room.enum';
 
 export interface IClient {
   id: string;

@@ -10,7 +10,7 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
 
-  const allowedOrigin = ['http://localhost:5173', process.env.CLIENT_URL];
+  const allowedOrigin = ['http://localhost:9000', process.env.CLIENT_URL];
 
   app.enableCors({
     origin: (origin, callback) => {

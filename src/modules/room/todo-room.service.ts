@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { IClient, IMessage, IRoom, IRoomTask } from './room.interface';
+import { IClient, IMessage, IRoom, IRoomTask } from './todo-room.interface';
 import { Task } from '../task/task.schema';
 
 @Injectable()
-export class RoomService {
+export class TodoRoomService {
   private clients: Record<string, IClient> = {};
   private rooms: Record<string, IRoom> = {};
   private roomTask: Record<string, IRoomTask> = {};

@@ -10,7 +10,7 @@ import { Reflector } from '@nestjs/core';
 import { Role } from '../enums/roles';
 
 @Injectable()
-export class RolesGuard implements CanActivate {
+export class WsRolesGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(
@@ -20,8 +20,8 @@ export class RolesGuard implements CanActivate {
 
     if (!roles) return true;
 
-    const request = context.switchToHttp().getRequest();
-    const user = request.user;
+    const client = context.switchToWs().getClient();
+    const user = client.getData().user;
 
     const isAuth = roles.some((role) => role === user.role);
 

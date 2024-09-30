@@ -5,7 +5,7 @@ import { UserModule } from './modules/user/user.module';
 
 import config from './config';
 import { AuthModule } from './modules/auth/auth.module';
-import { EventsModule } from './modules/room/room.module';
+import { TodoRoomModule } from './modules/room/todo-room.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { HistorialModule } from './modules/historial/historial.module';
 import { TaskModule } from './modules/task/task.module';
@@ -14,10 +14,12 @@ import { ApiKeyGuard } from './common/guards';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MetadataScanner } from '@nestjs/core';
+import { MessageModule } from './modules/competition/message.module';
 
 @Module({
   imports: [
-    EventsModule,
+    TodoRoomModule,
+    MessageModule,
     UserModule,
     AuthModule,
     ProfileModule,

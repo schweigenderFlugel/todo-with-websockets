@@ -1,28 +1,28 @@
 import {
   Injectable,
-  Inject,
   ExecutionContext,
   CanActivate,
+  Inject,
   UnauthorizedException,
   ForbiddenException,
 } from '@nestjs/common';
-import { JsonWebTokenError, JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { ConfigType } from '@nestjs/config';
-import { Request } from 'express';
-import config from '../../config';
+import { JsonWebTokenError, JwtService, TokenExpiredError } from '@nestjs/jwt';
+import { Socket } from 'socket.io';
+import config from 'src/config';
 import { ITokenPayload } from '../interfaces/auth.interface';
 
 @Injectable()
-export class JwtGuard implements CanActivate {
+export class WsJwtGuard implements CanActivate {
   constructor(
     @Inject(config.KEY)
     private readonly configService: ConfigType<typeof config>,
     private readonly jwtService: JwtService,
   ) {}
 
-  private extractTokenFromRequestHeader(req: Request): string | undefined {
-    const [type, token] = req.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+  private extractTokenFromClientHeader(client: Socket): string | undefined {
+    const { authentication } = client.handshake.headers;
+    return authentication as string;
   }
 
   private verifyJwt(token: string): Promise<ITokenPayload> {
@@ -37,10 +37,11 @@ export class JwtGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
-      const request = context.switchToHttp().getRequest<Request>();
-      const token = this.extractTokenFromRequestHeader(request);
+      const client = context.switchToWs().getClient<Socket>();
+      const token = this.extractTokenFromClientHeader(client);
       const payload = await this.verifyJwt(token);
-      request['user'] = payload;
+      const data = context.switchToWs().getData();
+      data['user'] = payload;
       return true;
     } catch (error) {
       if (error instanceof JsonWebTokenError) {
