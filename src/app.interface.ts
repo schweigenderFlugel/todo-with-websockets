@@ -21,6 +21,7 @@ export interface IRoute {
 export interface IMetadataResponse {
   name: string;
   path: string;
+  method: string;
   summary: string;
   dto: Type<IDtoMetadata>;
 }

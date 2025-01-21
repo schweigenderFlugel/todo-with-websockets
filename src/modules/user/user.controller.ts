@@ -7,18 +7,21 @@ import { User } from './user.schema';
 import { ObjectId } from 'mongoose';
 import { UserDto } from './user.dto';
 import { ObjectIdPipe } from 'src/common/pipes/object-id.pipe';
+import { RouteSummary } from 'src/common/decorators';
 
 @UseGuards(JwtGuard, RolesGuard)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @RouteSummary('Get list of users')
   @Roles(Role.ADMIN)
   @Get()
   async getAllUsers(): Promise<User[]> {
     return await this.userService.getAllUsers();
   }
 
+  @RouteSummary('Assign role to user')
   @Roles(Role.ADMIN)
   @Put(':id')
   async asignAdminRole(

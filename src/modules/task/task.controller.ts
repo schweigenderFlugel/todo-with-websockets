@@ -18,12 +18,14 @@ import { UserRequest } from 'src/common/interfaces/auth.interface';
 import { CreateTaskDto, UpdateTaskDto } from './task.dto';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/roles';
+import { RouteSummary } from 'src/common/decorators';
 
 @UseGuards(JwtGuard, RolesGuard)
 @Controller('tasks')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
+  @RouteSummary('Get all tasks')
   @Roles(Role.ADMIN)
   @Get()
   async getAllTasks(@Req() req: UserRequest): Promise<Task[]> {
@@ -31,12 +33,14 @@ export class TaskController {
     return await this.taskService.getAllTasks(creator);
   }
 
+  @RouteSummary('Get task by id')
   @Roles(Role.ADMIN)
   @Get(':id')
   async selectTask(@Param('id', ObjectIdPipe) id: ObjectId): Promise<Task> {
     return await this.taskService.selectTask(id);
   }
 
+  @RouteSummary('Create a task')
   @Roles(Role.ADMIN)
   @Post()
   async createTask(
@@ -47,6 +51,7 @@ export class TaskController {
     return await this.taskService.createTask(creator, data);
   }
 
+  @RouteSummary('Update a task')
   @Roles(Role.ADMIN)
   @Put(':id')
   async updateTask(
@@ -56,6 +61,7 @@ export class TaskController {
     return await this.taskService.updateTask(id, data);
   }
 
+  @RouteSummary('Delete a task')
   @Roles(Role.ADMIN)
   @Delete()
   async deleteTask(@Req() req: UserRequest): Promise<void> {

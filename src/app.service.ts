@@ -1,5 +1,5 @@
 import { Injectable, Type } from '@nestjs/common';
-import { PATH_METADATA } from '@nestjs/common/constants';
+import { METHOD_METADATA, PATH_METADATA } from '@nestjs/common/constants';
 import {
   HttpAdapterHost,
   MetadataScanner,
@@ -45,9 +45,10 @@ export class AppService {
     return properties;
   }
 
-  private getAllControllerMetadata() {
+  private getAllControllersMetadata() {
     const modules = [...this.modulesContainer.values()];
     const response: IMetadataResponse[] = [];
+    let methodName: string;
 
     modules.forEach(({ controllers }) => {
       if (!controllers) return;
@@ -59,7 +60,7 @@ export class AppService {
         const methods = this.metadataScanner.getAllMethodNames(prototype);
         const name = prototype.constructor.name.split('Controller')[0];
         methods
-          .filter((method) => method !== 'about' && method !== 'renderDoc')
+          .filter((path) => path !== 'about' && path !== 'renderDoc')
           .forEach((key) => {
             const types: Type<IDtoMetadata>[] = Reflect.getMetadata(
               'design:paramtypes',
@@ -70,6 +71,11 @@ export class AppService {
               ROUTE_SUMMARY,
               prototype[key],
             );
+            const method = this.reflector.get<number>(
+              METHOD_METADATA,
+              prototype[key],
+            );
+            methodName = (method === 1 && 'post') || (method === 2 && 'put');
             if (types) {
               types.forEach((type) => {
                 if (type && type.name.endsWith('Dto')) {
@@ -94,6 +100,7 @@ export class AppService {
                   response.push({
                     name: name,
                     path: path,
+                    method: methodName,
                     summary: summary,
                     dto: type,
                   });
@@ -107,6 +114,7 @@ export class AppService {
       name: item.name,
       path: item.path,
       summary: item.summary,
+      method: item.method,
       dto: {
         name: item.dto.name,
         properties: this.getDtoProperties(item.dto),
@@ -125,7 +133,7 @@ export class AppService {
   }
 
   getAllRoutes(): IRoute[] {
-    const controllerMetadata = this.getAllControllerMetadata();
+    const controllerMetadata = this.getAllControllersMetadata();
     const models = this.getModels();
     const server = this.adapterHost.httpAdapter.getInstance();
     models.forEach((model) => {
@@ -137,8 +145,11 @@ export class AppService {
       }
     });
     const routes = server._router.stack
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .filter((r: any) => r.route)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .filter((r: any) => r.route.path !== '/about' && r.route.path !== '/docs')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .map((r: any) => ({
         name: controllerMetadata.some(
           (metadata) => metadata.path === r.route.path,
@@ -157,11 +168,15 @@ export class AppService {
             ).summary
           : null,
         dto: controllerMetadata.some(
-          (metadata) => metadata.path === r.route.path,
+          (metadata) =>
+            metadata.path === r.route.path &&
+            metadata.method === Object.keys(r.route.methods)[0],
         )
           ? {
               name: controllerMetadata.find(
-                (metadata) => metadata.path === r.route.path,
+                (metadata) =>
+                  metadata.path === r.route.path &&
+                  metadata.method === Object.keys(r.route.methods)[0],
               ).dto.name,
               properties: controllerMetadata.find(
                 (metadata) => metadata.path === r.route.path,
